@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+#DEBHELPER#
+
+if [ "$1" = "configure" ]; then
+    mkdir -p /mnt/data/wb-dmx-fixtures/library
+    # The confed form is generated from the profile library; wb-mqtt-confed picks the file up itself.
+    wb-dmx-fixtures update-schema || true
+fi
+
+exit 0

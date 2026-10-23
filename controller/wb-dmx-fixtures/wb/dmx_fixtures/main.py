@@ -25,7 +25,9 @@ EXIT_FAILURE = 1
 EXIT_CONFIG_ERROR = 6
 
 CONFIG_FILEPATH = "/etc/wb-dmx-fixtures.conf"
-SCHEMA_FILEPATH = "/etc/wb-mqtt-confed/schemas/wb-dmx-fixtures.schema.json"
+# wb-mqtt-confed loads /usr/share/wb-mqtt-confed/schemas (packaged) and
+# /var/lib/wb-mqtt-confed/schemas (generated at run time); ours is regenerated on every import.
+SCHEMA_FILEPATH = "/var/lib/wb-mqtt-confed/schemas/wb-dmx-fixtures.schema.json"
 SERVICE_NAME = "wb-dmx-fixtures"
 
 
@@ -65,8 +67,9 @@ def cmd_show(key: str, mode: Optional[str], library_dir: Path) -> int:
     for c in mapping.controls:
         span = f"0..{c.max}" if c.type == "range" else c.type
         chans = ", ".join(f"{ch.name}@{ch.offset + 1}" + (f"+fine" if ch.fine_offsets else "") for ch in c.channels)
-        ro = " (ro)" if c.readonly else ""
-        print(f"  {c.id:28s} {c.type:5s} {span:9s}{ro:5s} <- {chans}   default={mapping.state[c.id]!r}")
+        print(f"  {c.id:28s} {c.type:5s} {span:9s} <- {chans}   default={mapping.state[c.id]!r}")
+        for value, title in c.enum.items():
+            print(f"      {value:>3s}: {title['en']}")
     print("render:", list(mapping.render()))
     return EXIT_SUCCESS
 
@@ -74,20 +77,23 @@ def cmd_show(key: str, mode: Optional[str], library_dir: Path) -> int:
 def run_service(config_path: Path, library_dir: Path) -> int:
     # The MQTT client (wb_common) exists only on a controller; the library commands must work
     # without it, so the service module is imported here and not at module level.
-    from .service import ConfigError, DmxFixturesService, load_fixtures  # pylint: disable=import-outside-toplevel
+    from .service import (  # pylint: disable=import-outside-toplevel
+        ConfigError, DmxFixturesService, load_fixtures, publish_config_error,
+    )
 
     if not config_path.is_file():
         print(f"configuration file not found: {config_path}", file=sys.stderr)
         return EXIT_CONFIG_ERROR
     with open(config_path, encoding="utf-8") as f:
         config = json.load(f)
-    if "gateway" not in config or "host" not in config["gateway"]:
-        print("configuration: gateway.host is required", file=sys.stderr)
+    if not isinstance(config.get("gateway"), dict):
+        print("configuration: gateway section is required", file=sys.stderr)
         return EXIT_CONFIG_ERROR
     try:
         fixtures = load_fixtures(config, library_dir)
     except ConfigError as e:
         print(f"configuration: {e}", file=sys.stderr)
+        publish_config_error(str(e))
         return EXIT_CONFIG_ERROR
     return DmxFixturesService(config, fixtures).run()
 

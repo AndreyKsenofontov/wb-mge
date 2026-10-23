@@ -19,6 +19,12 @@ LIBRARY_DIR = Path("/mnt/data/wb-dmx-fixtures/library")
 OFL_RAW_URL = "https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library/master/fixtures/{key}.json"
 KEY_RE = re.compile(r"^[a-z0-9-]+/[a-z0-9-]+$")
 
+# json-editor renders descriptions as HTML, so angle brackets would vanish from them.
+SCHEMA_DESCRIPTION = ("Fixtures driven over a WB-MGU DMX gateway. Profiles come from the Open Fixture Library; "
+                      "add more on the controller with: wb-dmx-fixtures import manufacturer/fixture")
+ID_DESCRIPTION = "Suffix of the MQTT device id (dmx_par1 for par1): lowercase letters, digits and underscores."
+ADDRESS_DESCRIPTION = "First DMX channel of the fixture; the mode decides how many channels follow it."
+
 
 def list_profiles(library_dir: Path = LIBRARY_DIR) -> dict[str, dict[str, Any]]:
     """key -> fixture JSON for every profile in the library, sorted by key."""
@@ -61,7 +67,7 @@ def fixture_branch(key: str, fixture: dict[str, Any]) -> dict[str, Any]:
             "id": {
                 "type": "string", "title": "Device id", "propertyOrder": 1,
                 "pattern": "^[a-z0-9_]{1,32}$",
-                "description": "MQTT device id suffix: dmx_<id>. Lowercase letters, digits and underscores.",
+                "description": ID_DESCRIPTION,
             },
             "name": {"type": "string", "title": "Name", "propertyOrder": 2},
             "mode": {
@@ -70,10 +76,11 @@ def fixture_branch(key: str, fixture: dict[str, Any]) -> dict[str, Any]:
             },
             "address": {
                 "type": "integer", "title": "Start address", "minimum": 1, "maximum": 512, "default": 1,
-                "propertyOrder": 4,
+                "propertyOrder": 4, "description": ADDRESS_DESCRIPTION,
             },
         },
         "required": ["fixture", "id", "mode", "address"],
+        "options": {"disable_edit_json": True, "disable_properties": True},
     }
 
 
@@ -93,12 +100,13 @@ def build_schema(profiles: dict[str, dict[str, Any]], config_path: str, service:
         "$schema": "http://json-schema.org/draft-04/schema#",
         "type": "object",
         "title": "DMX fixtures (WB-MGU gateway)",
-        "description": "Fixtures driven over a WB-MGU DMX gateway. Profiles come from the Open Fixture Library; "
-                       "add more with: wb-dmx-fixtures import <manufacturer/fixture>",
+        "description": SCHEMA_DESCRIPTION,
         "configFile": {"path": config_path, "service": service},
+        "options": {"disable_edit_json": True, "disable_properties": True, "disable_collapse": True},
         "properties": {
             "gateway": {
                 "type": "object", "title": "Gateway", "propertyOrder": 1,
+                "options": {"disable_edit_json": True, "disable_properties": True, "disable_collapse": True},
                 "properties": {
                     "host": {"type": "string", "title": "Address", "propertyOrder": 1},
                     "port": {"type": "integer", "title": "Modbus TCP port", "default": 502, "minimum": 1,
@@ -127,6 +135,14 @@ def build_schema(profiles: dict[str, dict[str, Any]], config_path: str, service:
                 "Fixtures": "Приборы", "Device id": "Идентификатор устройства", "Name": "Название",
                 "DMX mode": "Режим DMX", "Start address": "Стартовый адрес",
                 "No profiles in the library": "В библиотеке нет профилей",
+                SCHEMA_DESCRIPTION: "Приборы, подключённые через DMX-шлюз WB-MGU. Профили берутся из Open Fixture "
+                                    "Library; добавить профиль можно на контроллере командой "
+                                    "wb-dmx-fixtures import manufacturer/fixture",
+                ID_DESCRIPTION: "Суффикс идентификатора MQTT-устройства (dmx_par1 для par1): строчные латинские "
+                                "буквы, цифры и подчёркивание.",
+                ADDRESS_DESCRIPTION: "Первый DMX-канал прибора; сколько каналов занято дальше, определяет режим.",
+                "Changes arriving faster than this are merged into one write per fixture.":
+                    "Изменения, приходящие чаще, объединяются в одну запись на прибор.",
             }
         },
     }

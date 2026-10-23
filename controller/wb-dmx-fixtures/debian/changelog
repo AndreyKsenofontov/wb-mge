@@ -1,5 +1,5 @@
 wb-dmx-fixtures (0.1.0) stable; urgency=medium
 
-  * Initial prototype: OFL profiles, confed schema, MQTT devices, Modbus TCP writes.
+  * Initial release: OFL profiles, confed form, MQTT devices, Modbus TCP writes to the WB-MGU gateway.
 
- -- Wiren Board team <info@wirenboard.com>  Thu, 23 Oct 2026 23:50:00 +0300
+ -- Wiren Board team <info@wirenboard.com>  Fri, 24 Oct 2026 00:30:00 +0300

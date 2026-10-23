@@ -15,7 +15,7 @@ from typing import Any, Optional
 from wb_common.mqtt_client import MQTTClient
 
 from . import library, ofl
-from .mapping import Control, FixtureMapping, build_mapping
+from .mapping import KIND_DIRECT, KIND_LEVEL, KIND_RGB, Control, FixtureMapping, build_mapping
 from .modbus_tcp import DmxGatewayClient, ModbusError
 
 LOG = logging.getLogger("wb-dmx-fixtures")
@@ -28,6 +28,7 @@ GATEWAY_RETRY_S = 5.0
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 EXIT_CONFIG_ERROR = 6
+CONFIG_ERROR_PUBLISH_TIMEOUT_S = 2.0
 
 
 @dataclass
@@ -79,18 +80,39 @@ def load_fixtures(config: dict[str, Any], library_dir: Path = library.LIBRARY_DI
 
 
 def control_meta(c: Control) -> dict[str, Any]:
-    meta: dict[str, Any] = {"type": c.type, "order": c.order, "readonly": c.readonly,
+    meta: dict[str, Any] = {"type": c.type, "order": c.order, "readonly": False,
                             "title": {"en": c.title_en, "ru": c.title_ru}}
     if c.type == "range":
         meta["min"] = 0
         meta["max"] = c.max
+    if c.enum:
+        meta["enum"] = c.enum
     return meta
+
+
+def publish_config_error(text: str) -> None:
+    """Leave the error on the service device so a bad config saved in the web UI is visible there."""
+    client = MQTTClient(f"{DRIVER}-config")
+    try:
+        client.start()
+        dev = f"/devices/{SERVICE_DEVICE}"
+        client.publish(f"{dev}/meta", json.dumps({"driver": DRIVER, "title": {"en": "DMX fixtures", "ru": "DMX-приборы"}},
+                                                 ensure_ascii=False), retain=True)
+        client.publish(f"{dev}/controls/status/meta", json.dumps({"type": "text", "readonly": True, "order": 1,
+                                                                  "title": {"en": "Status", "ru": "Состояние"}},
+                                                                 ensure_ascii=False), retain=True)
+        client.publish(f"{dev}/controls/status", f"config error: {text}", retain=True)
+        info = client.publish(f"{dev}/meta/error", "r", retain=True)
+        info.wait_for_publish(timeout=CONFIG_ERROR_PUBLISH_TIMEOUT_S)   # stop() would drop a queued message
+        client.stop()
+    except (ConnectionError, OSError) as e:
+        LOG.warning("cannot report the config error over MQTT: %s", e)
 
 
 class DmxFixturesService:
     def __init__(self, config: dict[str, Any], fixtures: list[Fixture]) -> None:
         gw = config["gateway"]
-        self._gateway = DmxGatewayClient(str(gw["host"]), int(gw.get("port", 502)), int(gw.get("unit_id", 1)))
+        self._gateway = DmxGatewayClient(str(gw.get("host", "")), int(gw.get("port", 502)), int(gw.get("unit_id", 1)))
         self._write_interval_s = int(gw.get("write_interval_ms", 25)) / 1000
         self._fixtures = {f.device_id: f for f in fixtures}
         self._dirty: set[str] = set()
@@ -119,7 +141,7 @@ class DmxFixturesService:
                                                   "title": {"en": "Status", "ru": "Состояние"}})
         self._pub(f"{dev}/controls/gateway/meta", {"type": "text", "readonly": True, "order": 2,
                                                    "title": {"en": "Gateway", "ru": "Шлюз"}})
-        self._pub(f"{dev}/controls/gateway", f"{self._gateway.host}:{self._gateway.port}")
+        self._pub(f"{dev}/controls/gateway", f"{self._gateway.host}:{self._gateway.port}" if self._gateway.host else "")
         self._pub(f"{dev}/controls/fixtures/meta", {"type": "value", "readonly": True, "order": 3,
                                                     "title": {"en": "Fixtures", "ru": "Приборов"}})
         self._pub(f"{dev}/controls/fixtures", str(len(self._fixtures)))
@@ -198,17 +220,14 @@ class DmxFixturesService:
             LOG.warning("%s/%s: rejected value %r", device_id, control_id, payload)
             return
         self._pub(f"/devices/{device_id}/controls/{control_id}", str(fx.mapping.state[control_id]))
-        for c in fx.mapping.controls:
-            if c.kind == "mode_name":
-                self._pub(f"/devices/{device_id}/controls/{c.id}", str(fx.mapping.state[c.id]))
         self._mark_dirty(device_id)
 
     def _blackout(self) -> None:
         for fx in self._fixtures.values():
             for c in fx.mapping.controls:
-                if c.kind in ("direct", "level"):
+                if c.kind in (KIND_DIRECT, KIND_LEVEL):
                     fx.mapping.set_value(c.id, "0")
-                elif c.kind == "rgb":
+                elif c.kind == KIND_RGB:
                     fx.mapping.set_value(c.id, "0;0;0")
                 self._pub(f"/devices/{fx.device_id}/controls/{c.id}", str(fx.mapping.state[c.id]))
             self._mark_dirty(fx.device_id)
@@ -233,6 +252,13 @@ class DmxFixturesService:
         with self._dirty_lock:
             pending = list(self._dirty)
             self._dirty.clear()
+        if not self._gateway.host:
+            # A freshly installed package has no gateway yet: stay up so the service device and the
+            # confed form are there, and say what is missing instead of retrying a connection to "".
+            if self._gateway_ok is not False:
+                self._gateway_ok = False
+                self._set_status("gateway address is not configured", "w")
+            return
         for device_id in pending:
             fx = self._fixtures[device_id]
             data = bytes(fx.mapping.render())

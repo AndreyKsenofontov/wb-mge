@@ -3,12 +3,13 @@
 The web UI of a controller knows a handful of control types (range, rgb, switch, pushbutton,
 value, text), so the OFL capability model is reduced to three shapes:
 
-* a channel with one capability over the whole range → one `range` control (16-bit when the
-  mode carries fine channels); Red/Green/Blue intensity channels of one pixel are folded into a
-  single `rgb` control;
-* a channel split into capability ranges → a `<name>_mode` range that selects the capability,
-  a read-only `<name>_mode_name` text echoing its label, and a `<name>` 0..100 % range that
-  positions the value inside the selected capability when that capability is continuous;
+* a channel with one capability over the whole range → one `range` control; Red/Green/Blue
+  intensity channels of one pixel are folded into a single `rgb` control. Pan and Tilt keep the
+  full 16-bit resolution of their fine channels, every other channel is driven as 0..255 and its
+  fine byte is derived from that;
+* a channel split into capability ranges → a `<name>_mode` enum control (a drop-down in the web
+  UI) that selects the capability, plus a `<name>` 0..100 % range that positions the value inside
+  the selected capability when at least one capability of the channel is continuous;
 * everything else keeps its OFL name, so an exotic channel is still a labelled slider rather
   than "Channel 7".
 """
@@ -19,9 +20,10 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from .ofl import DMX_MAX, Channel, Profile
+from .ofl import DMX_MAX, Capability, Channel, Profile
 
 RGB_COLORS = ("Red", "Green", "Blue")
+POSITION_TYPES = {"Pan", "Tilt"}          # capability types that keep their 16-bit resolution
 
 # Russian titles for the channel names OFL uses most; anything else keeps its English name.
 RU_TITLES = {
@@ -38,6 +40,33 @@ RU_TITLES = {
     "Cold White": "Холодный белый", "Iris": "Ирис", "Frost": "Фрост", "Fog": "Дым",
 }
 
+# Russian wording for the capability labels ofl.Capability.label builds; applied word by word
+# so "Strobe 1Hz→20Hz" becomes "Строб 1Hz→20Hz" and an unknown effect name stays as it is.
+RU_LABEL_WORDS = {
+    "Off": "Выкл", "Open": "Открыт", "Closed": "Закрыт", "Strobe": "Строб", "Pulse": "Пульсация",
+    "RampUp": "Нарастание", "RampDown": "Спад", "Slot": "Слот", "Shake": "Тряска", "Rotation": "Вращение",
+    "stop": "стоп", "slow": "медленно", "fast": "быстро", "Prism": "Призма", "Blackout": "Затемнение",
+    "Color": "Цвет", "preset": "пресет", "temperature": "температура", "default": "по умолчанию",
+    "cold": "холодный", "warm": "тёплый", "Program": "Программа", "Music": "Музыка", "controlled": "управл.",
+    "Sound": "Звук", "Control": "управление", "Reset": "Сброс", "Generic": "Значение", "Effect": "Эффект",
+    "Maintenance": "Сервис", "ColorJump": "Смена цветов", "ColorFade": "Перелив цветов",
+    "Red": "Красный", "Green": "Зелёный", "Blue": "Синий", "White": "Белый", "Amber": "Янтарный",
+    "Yellow": "Жёлтый", "Cyan": "Голубой", "Magenta": "Пурпурный", "Pink": "Розовый", "Turquoise": "Бирюзовый",
+    "Lavender": "Лавандовый", "Mauve": "Лиловый", "Warm": "Тёплый", "Cold": "Холодный",
+}
+
+# Order of the controls in the device card: the ones a user reaches for first go on top, the rest
+# keep the order of the DMX mode.
+ORDER_GROUPS = {"Intensity": 0, "rgb": 1, "ColorIntensity": 2, "Pan": 3, "Tilt": 4}
+ORDER_OTHER = 5
+
+# Control kinds (how the value maps onto DMX).
+KIND_DIRECT = "direct"       # range control written into one channel
+KIND_RGB = "rgb"             # rgb control written into three channels
+KIND_MODE = "mode"           # enum control selecting a capability of a split channel
+KIND_LEVEL = "level"         # 0..100 % position inside the selected capability
+LEVEL_MAX = 100
+
 
 @dataclass
 class Control:
@@ -46,20 +75,21 @@ class Control:
     id: str
     title_en: str
     title_ru: str
-    type: str                        # range | rgb | text
-    kind: str                        # direct | rgb | mode | mode_name | level
+    type: str                        # range | rgb | value
+    kind: str                        # KIND_*
     channels: list[Channel]          # channels the control writes (rgb: R, G, B in order)
     max: int = DMX_MAX
-    readonly: bool = False
+    shift: int = 0                   # bits the control value is shifted left to fill the fine bytes
     order: int = 0
     default: Any = 0
+    enum: dict[str, dict[str, str]] = field(default_factory=dict)   # value -> {"en":..., "ru":...}
 
 
 @dataclass
 class FixtureMapping:
     profile: Profile
     controls: list[Control]
-    # Control id -> current value (int for range, "R;G;B" for rgb, str for text).
+    # Control id -> current value (int for range/value, "R;G;B" for rgb).
     state: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -72,7 +102,7 @@ class FixtureMapping:
     def set_value(self, control_id: str, raw: str) -> bool:
         """Apply a value written over MQTT. Returns False when the value is rejected."""
         c = self.control(control_id)
-        if c is None or c.readonly:
+        if c is None:
             return False
         if c.type == "rgb":
             parts = raw.split(";")
@@ -89,15 +119,7 @@ class FixtureMapping:
             except ValueError:
                 return False
             self.state[c.id] = max(0, min(c.max, value))
-        self._refresh_mode_names()
         return True
-
-    def _refresh_mode_names(self) -> None:
-        for c in self.controls:
-            if c.kind == "mode_name":
-                mode = int(self.state.get(c.id[: -len("_name")], 0))
-                caps = c.channels[0].capabilities
-                self.state[c.id] = caps[mode].label if 0 <= mode < len(caps) else ""
 
     def render(self) -> bytearray:
         """DMX bytes of the fixture, channel defaults for anything no control writes."""
@@ -105,20 +127,20 @@ class FixtureMapping:
         for ch in self.profile.channels:
             _write_channel(out, ch, ch.default_value << (ch.resolution_bits - 8))
         for c in self.controls:
-            if c.kind == "direct":
-                _write_channel(out, c.channels[0], int(self.state[c.id]))
-            elif c.kind == "rgb":
+            if c.kind == KIND_DIRECT:
+                _write_channel(out, c.channels[0], int(self.state[c.id]) << c.shift)
+            elif c.kind == KIND_RGB:
                 parts = [int(p) for p in str(self.state[c.id]).split(";")]
                 for ch, v in zip(c.channels, parts):
                     _write_channel(out, ch, v << (ch.resolution_bits - 8))
-            elif c.kind == "mode":
+            elif c.kind == KIND_MODE:
                 ch = c.channels[0]
                 mode = int(self.state[c.id])
                 cap = ch.capabilities[max(0, min(len(ch.capabilities) - 1, mode))]
                 level_id = c.id[: -len("_mode")]
                 level = int(self.state.get(level_id, 0)) if level_id in self.state else 0
                 if cap.is_continuous:
-                    value = cap.dmx_start + round((cap.dmx_end - cap.dmx_start) * level / 100)
+                    value = cap.dmx_start + round((cap.dmx_end - cap.dmx_start) * level / LEVEL_MAX)
                 else:
                     value = cap.dmx_start
                 _write_channel(out, ch, value << (ch.resolution_bits - 8))
@@ -148,10 +170,34 @@ def _ru(name: str) -> str:
     return RU_TITLES.get(name, name)
 
 
+def label_ru(label: str) -> str:
+    """Russian version of a capability label, word by word; unknown words are kept."""
+    return " ".join(RU_LABEL_WORDS.get(word, word) for word in label.split(" "))
+
+
+def capability_enum(caps: list[Capability]) -> dict[str, dict[str, str]]:
+    """Enum meta of a mode control: capability index -> localized label, duplicates numbered."""
+    out: dict[str, dict[str, str]] = {}
+    seen: dict[str, int] = {}
+    for i, cap in enumerate(caps):
+        label = cap.label
+        seen[label] = seen.get(label, 0) + 1
+        if seen[label] > 1:
+            label = f"{label} ({seen[label]})"
+        out[str(i)] = {"en": label, "ru": label_ru(label)}
+    return out
+
+
+def _group(ch: Channel, kind: str) -> int:
+    if kind == KIND_RGB:
+        return ORDER_GROUPS["rgb"]
+    single = ch.single
+    return ORDER_GROUPS.get(single.type, ORDER_OTHER) if single is not None else ORDER_OTHER
+
+
 def build_mapping(profile: Profile) -> FixtureMapping:
     controls: list[Control] = []
     taken: set[str] = set()
-    order = 0
 
     # Fold R/G/B intensity channels of one pixel into an rgb control. The pixel key is the channel
     # name with the color word removed, so "Red", "Green", "Blue" share "" and "Red 1".. share "1".
@@ -166,10 +212,9 @@ def build_mapping(profile: Profile) -> FixtureMapping:
             chans = [group[c] for c in RGB_COLORS]
             folded.update(c.name for c in chans)
             title = "Color" if not key else f"Color {key}"
-            order += 1
             default = ";".join(str(c.default_value) for c in chans)
             controls.append(Control(control_id(title, taken), title, _ru("Color") + (f" {key}" if key else ""),
-                                    "rgb", "rgb", chans, order=order, default=default))
+                                    "rgb", KIND_RGB, chans, default=default))
 
     for ch in profile.channels:
         if ch.name in folded:
@@ -178,28 +223,29 @@ def build_mapping(profile: Profile) -> FixtureMapping:
         if single is not None:
             if single.type == "NoFunction":
                 continue
-            order += 1
-            default = ch.default_value << (ch.resolution_bits - 8)
-            controls.append(Control(control_id(ch.name, taken), ch.name, _ru(ch.name), "range", "direct", [ch],
-                                    max=ch.max_value, order=order, default=default))
+            if single.type in POSITION_TYPES:
+                shift, maximum, default = 0, ch.max_value, ch.default_value << (ch.resolution_bits - 8)
+            else:
+                shift, maximum, default = ch.resolution_bits - 8, DMX_MAX, ch.default_value
+            controls.append(Control(control_id(ch.name, taken), ch.name, _ru(ch.name), "range", KIND_DIRECT, [ch],
+                                    max=maximum, shift=shift, default=default))
             continue
-        # Capability ranges: mode selector + label + level.
+        # Capability ranges: mode selector + level.
         caps = ch.capabilities
         default_mode = next((i for i, c in enumerate(caps) if c.dmx_start <= ch.default_value <= c.dmx_end), 0)
         base_id = control_id(ch.name, taken)
-        order += 1
-        controls.append(Control(f"{base_id}_mode", f"{ch.name} mode", f"{_ru(ch.name)}: режим", "range", "mode", [ch],
-                                max=len(caps) - 1, order=order, default=default_mode))
         taken.add(f"{base_id}_mode")
-        order += 1
-        controls.append(Control(f"{base_id}_mode_name", f"{ch.name} mode name", f"{_ru(ch.name)}: выбрано", "text",
-                                "mode_name", [ch], readonly=True, order=order, default=caps[default_mode].label))
-        taken.add(f"{base_id}_mode_name")
+        controls.append(Control(f"{base_id}_mode", ch.name, _ru(ch.name), "value", KIND_MODE, [ch],
+                                max=len(caps) - 1, default=default_mode, enum=capability_enum(caps)))
         if any(c.is_continuous for c in caps):
-            order += 1
             cap = caps[default_mode]
             span = cap.dmx_end - cap.dmx_start
-            level = round((ch.default_value - cap.dmx_start) * 100 / span) if span else 0
-            controls.append(Control(base_id, f"{ch.name} level", f"{_ru(ch.name)}: уровень", "range", "level", [ch],
-                                    max=100, order=order, default=max(0, min(100, level))))
+            level = round((ch.default_value - cap.dmx_start) * LEVEL_MAX / span) if span else 0
+            controls.append(Control(base_id, f"{ch.name} level", f"{_ru(ch.name)}: уровень", "range", KIND_LEVEL,
+                                    [ch], max=LEVEL_MAX, default=max(0, min(LEVEL_MAX, level))))
+
+    # Stable sort: priority group first, DMX channel order inside a group.
+    controls.sort(key=lambda c: (_group(c.channels[0], c.kind), c.channels[0].offset, c.kind == KIND_LEVEL))
+    for i, c in enumerate(controls, start=1):
+        c.order = i
     return FixtureMapping(profile, controls)

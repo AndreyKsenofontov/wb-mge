@@ -34,13 +34,16 @@ def test_rgb_par_renders_color_and_dimmer():
     assert data[2:5] == [255, 128, 0]          # Red, Green, Blue are channels 3..5
 
 
-def test_split_channel_gets_mode_name_and_level_controls():
+def test_split_channel_gets_enum_mode_and_level_controls():
     m = build_mapping(profile("cameo/q-spot-40-rgbw", "9-channel"))
     strobe = m.control("strobe_functions_mode")
-    assert strobe is not None and strobe.type == "range"
-    assert m.control("strobe_functions_mode_name").readonly
+    assert strobe is not None and strobe.type == "value"
+    assert strobe.enum["0"] == {"en": "Open", "ru": "Открыт"}
+    assert strobe.enum["7"]["en"] == "Strobe 1Hz→20Hz"
+    assert strobe.enum["8"]["en"] == "Open (2)"            # the second "Open" range is told apart
     assert m.control("strobe_functions").max == 100
-    # Mode 1 of that channel is "Open"? Pick the first continuous capability and position inside it.
+    assert m.control("strobe_functions_mode_name") is None
+    # Pick the first continuous capability and position inside it.
     ch = strobe.channels[0]
     cont = next(i for i, c in enumerate(ch.capabilities) if c.is_continuous)
     assert m.set_value("strobe_functions_mode", str(cont))
@@ -48,20 +51,50 @@ def test_split_channel_gets_mode_name_and_level_controls():
     cap = ch.capabilities[cont]
     expected = cap.dmx_start + round((cap.dmx_end - cap.dmx_start) * 0.5)
     assert m.render()[ch.offset] == expected
-    assert m.state["strobe_functions_mode_name"] == cap.label
 
 
-def test_fine_channels_make_16_bit_controls():
+def test_discrete_only_channel_has_no_level_control():
+    m = build_mapping(profile("stairville/mh-x50", "14ch"))
+    programs = m.control("built_in_programs_mode")
+    assert programs.type == "value" and programs.enum["1"]["en"] == "Program 1"
+    assert m.control("built_in_programs") is None
+    assert m.control("special_functions") is None
+    assert m.set_value("built_in_programs_mode", "1")
+    assert m.render()[programs.channels[0].offset] == 8     # start of the "Program 1" range
+
+
+def test_controls_are_ordered_dimmer_color_position_first():
+    m = build_mapping(profile("stairville/mh-x50", "14ch"))
+    ids = [c.id for c in m.controls]
+    assert ids[:3] == ["dimmer", "pan", "tilt"]
+    assert ids[3:] == ["speed", "color_wheel_mode", "color_wheel", "shutter_mode", "shutter", "gobo_wheel_mode",
+                       "gobo_wheel", "gobo_rotation_mode", "gobo_rotation", "special_functions_mode",
+                       "built_in_programs_mode", "prism_mode", "prism", "focus"]
+    assert [c.order for c in m.controls] == list(range(1, len(ids) + 1))
+    par = build_mapping(profile("cameo/q-spot-40-rgbw", "9-channel"))
+    assert [c.id for c in par.controls][:3] == ["dimmer", "color", "white"]
+
+
+def test_pan_tilt_keep_16_bit_resolution():
     m = build_mapping(profile("stairville/mh-x50", "14ch"))
     pan = m.control("pan")
     assert pan.max == 65535
-    assert m.set_value("pan", "0x1234".replace("0x", "")) is False or True   # non-numeric strings are rejected
+    assert not m.set_value("pan", "0x1234")                 # non-numeric strings are rejected
     assert m.set_value("pan", str(0x1234))
     data = m.render()
     ch = pan.channels[0]
     assert data[ch.offset] == 0x12 and data[ch.fine_offsets[0]] == 0x34
     dimmer = m.control("dimmer")
     assert dimmer.max == 255 and dimmer.channels[0].offset == 7
+
+
+def test_16_bit_dimmer_is_driven_as_8_bit():
+    m = build_mapping(profile("cameo/q-spot-40-rgbw", "9-channel"))
+    dimmer = m.control("dimmer")
+    assert dimmer.max == 255 and dimmer.channels[0].fine_offsets == [1]
+    assert m.set_value("dimmer", "200")
+    data = m.render()
+    assert data[0] == 200 and data[1] == 0
 
 
 def test_values_are_clamped_and_bad_input_rejected():
