@@ -1,0 +1,22 @@
+Source: wb-dmx-fixtures
+Maintainer: Wiren Board team <info@wirenboard.com>
+Section: misc
+Priority: optional
+Standards-Version: 4.5.1
+Build-Depends: debhelper-compat (= 13),
+               python3-all,
+               dh-python,
+               python3-setuptools,
+               python3-pytest <!nocheck>,
+               python3-wb-common (>= 2.1.0~~)
+Homepage: https://github.com/AndreyKsenofontov/wb-mge
+
+Package: wb-dmx-fixtures
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3-wb-common (>= 2.1.0~~)
+Description: DMX fixtures on a Wiren Board controller via a WB-MGU DMX gateway
+ Publishes fixtures described by Open Fixture Library profiles as MQTT devices
+ with semantic controls (dimmer, colour, pan/tilt, strobe modes) and writes
+ the resulting DMX channels to a WB-MGU gateway over Modbus TCP.

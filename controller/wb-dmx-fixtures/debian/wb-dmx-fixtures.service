@@ -1,0 +1,14 @@
+[Unit]
+Description=DMX fixtures over a WB-MGU gateway
+After=NetworkManager.service mosquitto.service
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/bin/wb-dmx-fixtures
+Restart=on-failure
+RestartSec=10
+RestartPreventExitStatus=2 6
+
+[Install]
+WantedBy=multi-user.target
