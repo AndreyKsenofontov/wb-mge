@@ -1,6 +1,7 @@
 #include "setting_validators.h"
 #include "setting_items.h"
 #include "bridge/dmx_frame.h"
+#include "bridge/dmx_net_proto.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -159,6 +160,33 @@ bool validate_dmx_break(const char *value)
 bool validate_dmx_mab(const char *value)
 {
     return validate_int_in_range(value, DMX_FRAME_MAB_MIN_US, DMX_FRAME_MAB_MAX_US);
+}
+
+bool validate_dmx_artnet_universe(const char *value)
+{
+    return validate_int_in_range(value, 0, ARTNET_PORT_ADDRESS_MAX);
+}
+
+bool validate_dmx_sacn_universe(const char *value)
+{
+    return validate_int_in_range(value, SACN_UNIVERSE_MIN, SACN_UNIVERSE_MAX);
+}
+
+#define DMX_LOSS_TIMEOUT_MIN_S              1
+#define DMX_LOSS_TIMEOUT_MAX_S              3600
+
+bool validate_dmx_loss_timeout(const char *value)
+{
+    return validate_int_in_range(value, DMX_LOSS_TIMEOUT_MIN_S, DMX_LOSS_TIMEOUT_MAX_S);
+}
+
+bool validate_dmx_loss(const char *value)
+{
+    if (!value) {
+        return false;
+    }
+    return (strncmp(value, DMX_LOSS_HOLD_STR, SETTING_ITEM_MAX_STR_LEN) == 0) ||
+           (strncmp(value, DMX_LOSS_BLACKOUT_STR, SETTING_ITEM_MAX_STR_LEN) == 0);
 }
 
 bool validate_baudrate(const char *value)

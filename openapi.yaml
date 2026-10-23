@@ -1577,6 +1577,43 @@ components:
           format: int64
           minimum: 0
           description: "Milliseconds since the output started (0 when inactive)"
+        artnet:
+          $ref: '#/components/schemas/DmxNetSource'
+        sacn:
+          $ref: '#/components/schemas/DmxNetSource'
+        signal_lost:
+          type: boolean
+          description: "True once the loss policy fired (no network packet for dmx_loss_timeout seconds) and no packet arrived since"
+
+    DmxNetSource:
+      type: object
+      description: "State of one network DMX receiver of a port (Art-Net or sACN)"
+      properties:
+        enabled:
+          type: boolean
+        universe:
+          type: integer
+          description: "Art-Net 15-bit port-address or sACN universe"
+        active:
+          type: boolean
+          description: "A packet for this port arrived within the last 2.5 s"
+        packets:
+          type: integer
+          format: int64
+          minimum: 0
+          description: "Packets accepted since the port started"
+        fps:
+          type: integer
+          minimum: 0
+          description: "Packets accepted during the previous second"
+        last_source:
+          type: string
+          description: "ip:port of the last accepted packet, empty if none"
+        priority:
+          type: integer
+          minimum: 0
+          maximum: 200
+          description: "sACN only: priority of the source being followed"
 
     RS485Settings:
       type: object
@@ -1641,6 +1678,36 @@ components:
           maximum: 1000
           default: 16
           description: "Mark-after-break length, microseconds"
+        dmx_artnet:
+          type: boolean
+          default: false
+          description: "Receive Art-Net (UDP 6454) into the universe when port_mode is dmx"
+        dmx_artnet_universe:
+          type: integer
+          minimum: 0
+          maximum: 32767
+          default: 0
+          description: "Art-Net 15-bit port-address: Net << 8 | SubNet << 4 | Universe"
+        dmx_sacn:
+          type: boolean
+          default: false
+          description: "Receive sACN / E1.31 (UDP 5568, multicast 239.255.x.y) when port_mode is dmx"
+        dmx_sacn_universe:
+          type: integer
+          minimum: 1
+          maximum: 63999
+          default: 1
+        dmx_loss:
+          type: string
+          enum: ["hold", "blackout"]
+          default: "hold"
+          description: "What the output does when the network sources stop: keep the last values or zero the universe"
+        dmx_loss_timeout:
+          type: integer
+          minimum: 1
+          maximum: 3600
+          default: 3
+          description: "Seconds without a network packet before dmx_loss applies"
         bridge:
           type: object
           properties:

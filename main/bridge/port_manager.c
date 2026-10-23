@@ -3,6 +3,7 @@
 #include "repeater.h"
 #include "dmx_output.h"
 #include "dmx_modbus.h"
+#include "dmx_net.h"
 #include "sniffer.h"
 #include "cache_multimaster.h"
 #include "cache_modbus_server.h"
@@ -46,6 +47,7 @@ typedef struct {
                                         // PASSIVE mode.
     dmx_frame_config_t dmx_cfg_at_init; // DMX config snapshot taken at port init time,
                                         // used to detect DMX parameter changes.
+    dmx_net_port_config_t dmx_net_at_init;  // Network-source config snapshot, same purpose.
     SemaphoreHandle_t init_mutex;       // Serialises port_init_mode/port_deinit_mode against
                                         // races between the HTTP set_mode handler, the async
                                         // settings_update_task and the boot loop in
@@ -358,6 +360,28 @@ static const char *bridge_port_nvs_key(unsigned index)
     return (index < BRIDGES_COUNT) ? keys[index] : KEY_BRIDGE_PORT1;
 }
 
+// Read the network DMX sources and the loss policy of a port from NVS.
+PORT_MANAGER_STATIC void read_dmx_net_config(unsigned index, dmx_net_port_config_t *cfg)
+{
+    static const char * const artnet_keys[BRIDGES_COUNT] = {KEY_DMX_ARTNET_1, KEY_DMX_ARTNET_2};
+    static const char * const artnet_univ_keys[BRIDGES_COUNT] = {KEY_DMX_ARTNET_UNIV_1, KEY_DMX_ARTNET_UNIV_2};
+    static const char * const sacn_keys[BRIDGES_COUNT] = {KEY_DMX_SACN_1, KEY_DMX_SACN_2};
+    static const char * const sacn_univ_keys[BRIDGES_COUNT] = {KEY_DMX_SACN_UNIV_1, KEY_DMX_SACN_UNIV_2};
+    static const char * const loss_keys[BRIDGES_COUNT] = {KEY_DMX_LOSS_1, KEY_DMX_LOSS_2};
+    static const char * const loss_tout_keys[BRIDGES_COUNT] = {KEY_DMX_LOSS_TOUT_1, KEY_DMX_LOSS_TOUT_2};
+
+    memset(cfg, 0, sizeof(*cfg));
+    cfg->artnet_enabled = setting_items_read_bool(artnet_keys[index]);
+    cfg->artnet_universe = (uint16_t)setting_items_read_int(artnet_univ_keys[index]);
+    cfg->sacn_enabled = setting_items_read_bool(sacn_keys[index]);
+    cfg->sacn_universe = (uint16_t)setting_items_read_int(sacn_univ_keys[index]);
+    cfg->loss_timeout_s = (uint16_t)setting_items_read_int(loss_tout_keys[index]);
+    char loss[SETTING_ITEM_MAX_STR_LEN] = {0};
+    setting_items_read(loss_keys[index], loss);
+    cfg->loss_policy = (strncmp(loss, DMX_LOSS_BLACKOUT_STR, SETTING_ITEM_MAX_STR_LEN) == 0)
+                       ? DMX_LOSS_BLACKOUT : DMX_LOSS_HOLD;
+}
+
 // Read the DMX output parameters of a port from NVS.
 static esp_err_t read_dmx_config(unsigned index, dmx_frame_config_t *cfg)
 {
@@ -479,7 +503,16 @@ static esp_err_t port_init_mode(unsigned index, pm_mode_t mode)
             dmx_output_deinit_port(index);
             return mb_ret;
         }
+        // Network sources are optional: a socket that would not open is logged, the port
+        // keeps transmitting what Modbus and the UI write.
+        dmx_net_port_config_t net_cfg;
+        read_dmx_net_config(index, &net_cfg);
+        esp_err_t net_ret = dmx_net_port_start(index, &net_cfg);
+        if (net_ret != ESP_OK) {
+            ESP_LOGE(TAG, "Port[%u]: dmx_net_port_start failed: %s", index + 1, esp_err_to_name(net_ret));
+        }
         pm_ctx[index].dmx_cfg_at_init = dmx_cfg;
+        pm_ctx[index].dmx_net_at_init = net_cfg;
         break;
     }
 
@@ -584,11 +617,13 @@ static void port_deinit_mode(unsigned index)
         break;
 
     case PM_MODE_DMX:
-        // Stop the listener first: its receiver tasks write into the universe that
-        // dmx_output_deinit_port() stops transmitting.
+        // Stop the writers first: the Modbus listener and the network receivers write into
+        // the universe that dmx_output_deinit_port() stops transmitting.
+        dmx_net_port_stop(index);
         dmx_modbus_deinit(index);
         dmx_output_deinit_port(index);
         memset(&pm_ctx[index].dmx_cfg_at_init, 0, sizeof(pm_ctx[index].dmx_cfg_at_init));
+        memset(&pm_ctx[index].dmx_net_at_init, 0, sizeof(pm_ctx[index].dmx_net_at_init));
         break;
 
     default:
@@ -696,6 +731,7 @@ esp_err_t port_manager_init_subsystems(void)
     // so the cross-port data path is protected from the first init onward.
     repeater_init();
     dmx_output_init();
+    dmx_net_init();
 
     // The two below are independent of each other, so one running out of memory must not
     // cost the device the other: try both, report the first error. Losing the sniffer must
@@ -1437,9 +1473,12 @@ static bool port_settings_changed_locked(unsigned port_index)
             return true;
         }
         const dmx_frame_config_t *cur = &pm_ctx[port_index].dmx_cfg_at_init;
+        dmx_net_port_config_t nvs_net;
+        read_dmx_net_config(port_index, &nvs_net);
         return (cur->slots != nvs_cfg.slots) || (cur->refresh_hz != nvs_cfg.refresh_hz) ||
                (cur->break_us != nvs_cfg.break_us) || (cur->mab_us != nvs_cfg.mab_us) ||
-               (dmx_modbus_get_port(port_index) != setting_items_read_int(bridge_port_nvs_key(port_index)));
+               (dmx_modbus_get_port(port_index) != setting_items_read_int(bridge_port_nvs_key(port_index))) ||
+               !dmx_net_config_equal(&pm_ctx[port_index].dmx_net_at_init, &nvs_net);
     }
 
     // PM_MODE_DISABLED — nothing to check.

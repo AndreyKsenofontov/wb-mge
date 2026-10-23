@@ -18,6 +18,13 @@ int mock_dmx_mab[BRIDGES_COUNT] = {16, 16};
 /* Stored mock values for the per-port TCP listener port (bridge_port_1 / bridge_port_2). */
 int mock_bridge_port[BRIDGES_COUNT] = {502, 503};
 
+/* Stored mock values for the network DMX sources of a port. */
+bool mock_dmx_artnet[BRIDGES_COUNT] = {false, false};
+int mock_dmx_artnet_univ[BRIDGES_COUNT] = {0, 0};
+bool mock_dmx_sacn[BRIDGES_COUNT] = {false, false};
+int mock_dmx_sacn_univ[BRIDGES_COUNT] = {1, 1};
+int mock_dmx_loss_tout[BRIDGES_COUNT] = {3, 3};
+
 /* Stored mock values for per-port cache overlay (cache_en_1 / cache_en_2) */
 bool mock_cache_en[BRIDGES_COUNT] = {false, false};
 
@@ -108,6 +115,10 @@ bool setting_items_read_bool(const char *key)
     if (ci >= 0) {
         return mock_cache_en[ci];
     }
+    if (strcmp(key, KEY_DMX_ARTNET_1) == 0) return mock_dmx_artnet[0];
+    if (strcmp(key, KEY_DMX_ARTNET_2) == 0) return mock_dmx_artnet[1];
+    if (strcmp(key, KEY_DMX_SACN_1) == 0) return mock_dmx_sacn[0];
+    if (strcmp(key, KEY_DMX_SACN_2) == 0) return mock_dmx_sacn[1];
     return false;
 }
 
@@ -118,6 +129,9 @@ int setting_items_read_int(const char *key)
     }
     static const struct { const char *key; int *store; } dmx_keys[] = {
         {KEY_BRIDGE_PORT1, &mock_bridge_port[0]},   {KEY_BRIDGE_PORT2, &mock_bridge_port[1]},
+        {KEY_DMX_ARTNET_UNIV_1, &mock_dmx_artnet_univ[0]}, {KEY_DMX_ARTNET_UNIV_2, &mock_dmx_artnet_univ[1]},
+        {KEY_DMX_SACN_UNIV_1, &mock_dmx_sacn_univ[0]},     {KEY_DMX_SACN_UNIV_2, &mock_dmx_sacn_univ[1]},
+        {KEY_DMX_LOSS_TOUT_1, &mock_dmx_loss_tout[0]},     {KEY_DMX_LOSS_TOUT_2, &mock_dmx_loss_tout[1]},
         {KEY_DMX_SLOTS_1, &mock_dmx_slots[0]},     {KEY_DMX_SLOTS_2, &mock_dmx_slots[1]},
         {KEY_DMX_REFRESH_1, &mock_dmx_refresh[0]}, {KEY_DMX_REFRESH_2, &mock_dmx_refresh[1]},
         {KEY_DMX_BREAK_1, &mock_dmx_break[0]},     {KEY_DMX_BREAK_2, &mock_dmx_break[1]},
@@ -176,6 +190,13 @@ void mock_setting_items_reset(void)
     }
     mock_bridge_port[0] = 502;
     mock_bridge_port[1] = 503;
+    for (unsigned i = 0; i < BRIDGES_COUNT; i++) {
+        mock_dmx_artnet[i] = false;
+        mock_dmx_artnet_univ[i] = 0;
+        mock_dmx_sacn[i] = false;
+        mock_dmx_sacn_univ[i] = 1;
+        mock_dmx_loss_tout[i] = 3;
+    }
     mock_setting_items_save_called = 0;
     mock_setting_items_save_bool_called = 0;
     mock_setting_items_save_should_fail = false;

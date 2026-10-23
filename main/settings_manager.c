@@ -94,6 +94,13 @@ static const setting_mapping_t rs485_base_mappings[] = {
     {"dmx_refresh", "dmx_refresh"},
     {"dmx_break", "dmx_break"},
     {"dmx_mab", "dmx_mab"},
+    // Network DMX sources and the signal-loss policy, applied when port_mode == dmx
+    {"dmx_artnet", "dmx_artnet"},
+    {"dmx_artnet_universe", "dmx_artnet_u"},
+    {"dmx_sacn", "dmx_sacn"},
+    {"dmx_sacn_universe", "dmx_sacn_u"},
+    {"dmx_loss", "dmx_loss"},
+    {"dmx_loss_timeout", "dmx_loss_t"},
 };
 
 static const setting_mapping_t rs485_bridge_mappings[] = {

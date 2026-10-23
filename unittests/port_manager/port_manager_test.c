@@ -7,6 +7,7 @@
 #include "repeater_mock.h"
 #include "dmx_output_mock.h"
 #include "dmx_modbus_mock.h"
+#include "dmx_net_mock.h"
 #include "esp_http_server.h"      /* httpd_req_t, for the REST handler tests */
 #include "freertos/semphr.h"      /* mock_xSemaphoreTake_hook, for the pm_lock race tests */
 
@@ -50,6 +51,8 @@ void mock_cache_multimaster_reset(void);
 void mock_setting_items_set_port_mode(unsigned index, const char *value);
 extern int mock_dmx_slots[];      /* per-port dmx_slots_N NVS store (mocks/setting_items.c) */
 extern int mock_bridge_port[];    /* per-port bridge_port_N NVS store (mocks/setting_items.c) */
+extern bool mock_dmx_artnet[];    /* per-port dmx_artnet_N NVS store (mocks/setting_items.c) */
+extern int mock_dmx_artnet_univ[];
 const char *mock_setting_items_get_port_mode(unsigned index);
 
 /* cache_modbus_server.c mock */
@@ -122,6 +125,7 @@ void setUp(void)
     mock_repeater_reset();
     mock_dmx_output_reset();
     mock_dmx_modbus_reset();
+    mock_dmx_net_reset();
     g_mock_port_mode_collision_ret = ESP_OK;   // no collision unless a test opts in
 }
 
@@ -461,6 +465,44 @@ void test_dmx_settings_changed_tracks_bridge_port(void)
     mock_bridge_port[0] = 1502;
     TEST_ASSERT_TRUE_MESSAGE(port_manager_check_settings_changed(0),
                              "a changed bridge_port must restart a dmx port's Modbus listener");
+}
+
+void test_set_mode_dmx_registers_network_sources(void)
+{
+    mock_dmx_artnet[0] = true;
+    mock_dmx_artnet_univ[0] = 5;
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(1, mock_dmx_net_calls[0].start_called);
+    TEST_ASSERT_TRUE(mock_dmx_net_calls[0].last_cfg.artnet_enabled);
+    TEST_ASSERT_EQUAL_UINT16(5, mock_dmx_net_calls[0].last_cfg.artnet_universe);
+    TEST_ASSERT_FALSE(mock_dmx_net_calls[0].last_cfg.sacn_enabled);
+    TEST_ASSERT_EQUAL(DMX_LOSS_HOLD, mock_dmx_net_calls[0].last_cfg.loss_policy);
+    TEST_ASSERT_EQUAL_UINT16(3, mock_dmx_net_calls[0].last_cfg.loss_timeout_s);
+    /* A receiver that would not start must not take the port down. */
+    TEST_ASSERT_EQUAL(PM_MODE_DMX, port_manager_get_mode(0));
+}
+
+void test_dmx_network_source_failure_keeps_port_up(void)
+{
+    mock_dmx_net_start_should_fail = true;
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(PM_MODE_DMX, port_manager_get_mode(0));
+}
+
+void test_switch_dmx_to_disabled_stops_network_sources(void)
+{
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DISABLED));
+    TEST_ASSERT_EQUAL(1, mock_dmx_net_calls[0].stop_called);
+}
+
+void test_dmx_settings_changed_tracks_network_sources(void)
+{
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_FALSE(port_manager_check_settings_changed(0));
+    mock_dmx_artnet[0] = true;
+    TEST_ASSERT_TRUE_MESSAGE(port_manager_check_settings_changed(0),
+                             "enabling Art-Net must restart the dmx port");
 }
 
 void test_set_mode_repeater_success(void)
@@ -3443,6 +3485,10 @@ int port_manager_test(void)
     RUN_TEST(test_set_mode_dmx_modbus_failure_rolls_back_output);
     RUN_TEST(test_switch_dmx_to_disabled_stops_modbus_listener);
     RUN_TEST(test_dmx_settings_changed_tracks_bridge_port);
+    RUN_TEST(test_set_mode_dmx_registers_network_sources);
+    RUN_TEST(test_dmx_network_source_failure_keeps_port_up);
+    RUN_TEST(test_switch_dmx_to_disabled_stops_network_sources);
+    RUN_TEST(test_dmx_settings_changed_tracks_network_sources);
 
     RUN_TEST(test_set_mode_transient_invalid_index);
     RUN_TEST(test_set_mode_transient_applies_live_but_does_not_persist);

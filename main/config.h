@@ -64,6 +64,12 @@
 #define DEFAULT_DMX_REFRESH                 "40"
 #define DEFAULT_DMX_BREAK                   "176"
 #define DEFAULT_DMX_MAB                     "16"
+#define DEFAULT_DMX_ARTNET                  "false"
+#define DEFAULT_DMX_ARTNET_UNIV             "0"
+#define DEFAULT_DMX_SACN                    "false"
+#define DEFAULT_DMX_SACN_UNIV               "1"
+#define DEFAULT_DMX_LOSS                    DMX_LOSS_HOLD_STR
+#define DEFAULT_DMX_LOSS_TOUT               "3"
 
 
 #ifdef MODEL_mge_v3

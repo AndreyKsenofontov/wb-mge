@@ -366,6 +366,20 @@ void test_validate_dmx_parameters(void)
     TEST_ASSERT_TRUE_MESSAGE(validate_dmx_mab("1000"), "1000 us MAB should be valid");
     TEST_ASSERT_FALSE_MESSAGE(validate_dmx_mab("8"), "8 us MAB is below the transmitter minimum");
     TEST_ASSERT_FALSE_MESSAGE(validate_dmx_mab("-12"), "Negative MAB should be invalid");
+
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_artnet_universe("0"), "Art-Net port-address 0 should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_artnet_universe("32767"), "Art-Net port-address 32767 should be valid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_artnet_universe("32768"), "Art-Net port-address 32768 should be invalid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_sacn_universe("1"), "sACN universe 1 should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_sacn_universe("63999"), "sACN universe 63999 should be valid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_sacn_universe("0"), "sACN universe 0 should be invalid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_sacn_universe("64000"), "sACN universe 64000 should be invalid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_loss("hold"), "loss policy hold should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_loss("blackout"), "loss policy blackout should be valid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_loss("scene"), "unknown loss policy should be invalid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_loss_timeout("1"), "1 s loss timeout should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_loss_timeout("3600"), "3600 s loss timeout should be valid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_loss_timeout("0"), "0 s loss timeout should be invalid");
 }
 
 // Test validate_port_mode function

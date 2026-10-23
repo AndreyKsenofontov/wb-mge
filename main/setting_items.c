@@ -244,6 +244,20 @@ static const setting_item_t setting_items[] = {
     {KEY_DMX_BREAK_2,   DEFAULT_DMX_BREAK,   validate_dmx_break,   SETTING_ITEM_TYPE_INT},
     {KEY_DMX_MAB_2,     DEFAULT_DMX_MAB,     validate_dmx_mab,     SETTING_ITEM_TYPE_INT},
 
+    // Network DMX sources (Art-Net, sACN) and the signal-loss policy of a dmx port
+    {KEY_DMX_ARTNET_1,      DEFAULT_DMX_ARTNET,      validate_bool,                SETTING_ITEM_TYPE_BOOL},
+    {KEY_DMX_ARTNET_UNIV_1, DEFAULT_DMX_ARTNET_UNIV, validate_dmx_artnet_universe, SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_SACN_1,        DEFAULT_DMX_SACN,        validate_bool,                SETTING_ITEM_TYPE_BOOL},
+    {KEY_DMX_SACN_UNIV_1,   DEFAULT_DMX_SACN_UNIV,   validate_dmx_sacn_universe,   SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_LOSS_1,        DEFAULT_DMX_LOSS,        validate_dmx_loss,            SETTING_ITEM_TYPE_STRING},
+    {KEY_DMX_LOSS_TOUT_1,   DEFAULT_DMX_LOSS_TOUT,   validate_dmx_loss_timeout,    SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_ARTNET_2,      DEFAULT_DMX_ARTNET,      validate_bool,                SETTING_ITEM_TYPE_BOOL},
+    {KEY_DMX_ARTNET_UNIV_2, DEFAULT_DMX_ARTNET_UNIV, validate_dmx_artnet_universe, SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_SACN_2,        DEFAULT_DMX_SACN,        validate_bool,                SETTING_ITEM_TYPE_BOOL},
+    {KEY_DMX_SACN_UNIV_2,   DEFAULT_DMX_SACN_UNIV,   validate_dmx_sacn_universe,   SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_LOSS_2,        DEFAULT_DMX_LOSS,        validate_dmx_loss,            SETTING_ITEM_TYPE_STRING},
+    {KEY_DMX_LOSS_TOUT_2,   DEFAULT_DMX_LOSS_TOUT,   validate_dmx_loss_timeout,    SETTING_ITEM_TYPE_INT},
+
     // Cache Modbus TCP server port and enable/disable flag
     {KEY_CACHE_MODBUS_PORT,           DEFAULT_CACHE_MODBUS_PORT,           validate_port, SETTING_ITEM_TYPE_INT},
     {KEY_CACHE_MODBUS_SERVER_ENABLED, DEFAULT_CACHE_MODBUS_SERVER_ENABLED, validate_bool, SETTING_ITEM_TYPE_BOOL},

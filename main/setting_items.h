@@ -110,6 +110,19 @@
 #define KEY_DMX_BREAK_2             "dmx_break_2"
 #define KEY_DMX_MAB_1               "dmx_mab_1"
 #define KEY_DMX_MAB_2               "dmx_mab_2"
+// Network DMX sources of a dmx port (max 15 chars for ESP32 NVS)
+#define KEY_DMX_ARTNET_1            "dmx_artnet_1"
+#define KEY_DMX_ARTNET_2            "dmx_artnet_2"
+#define KEY_DMX_ARTNET_UNIV_1       "dmx_artnet_u_1"
+#define KEY_DMX_ARTNET_UNIV_2       "dmx_artnet_u_2"
+#define KEY_DMX_SACN_1              "dmx_sacn_1"
+#define KEY_DMX_SACN_2              "dmx_sacn_2"
+#define KEY_DMX_SACN_UNIV_1         "dmx_sacn_u_1"
+#define KEY_DMX_SACN_UNIV_2         "dmx_sacn_u_2"
+#define KEY_DMX_LOSS_1              "dmx_loss_1"
+#define KEY_DMX_LOSS_2              "dmx_loss_2"
+#define KEY_DMX_LOSS_TOUT_1         "dmx_loss_t_1"
+#define KEY_DMX_LOSS_TOUT_2         "dmx_loss_t_2"
 
 // Cache Modbus TCP server port NVS key (max 15 chars for ESP32 NVS)
 #define KEY_CACHE_MODBUS_PORT               "cache_mb_port"
@@ -127,6 +140,10 @@
 #define PORT_MODE_PASSIVE_STR       "passive"
 #define PORT_MODE_REPEATER_STR      "repeater"
 #define PORT_MODE_DMX_STR           "dmx"
+
+// Behaviour of a dmx port when its network sources stop sending
+#define DMX_LOSS_HOLD_STR           "hold"
+#define DMX_LOSS_BLACKOUT_STR       "blackout"
 
 // Firmware update channel string values. These names are used verbatim as lookup
 // keys in the wb-releases manifest, so they must not be renamed.

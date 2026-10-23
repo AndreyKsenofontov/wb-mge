@@ -170,6 +170,30 @@ bool validate_dmx_mab(const char *value)
     return true;
 }
 
+bool validate_dmx_artnet_universe(const char *value)
+{
+    (void)value;
+    return true;
+}
+
+bool validate_dmx_sacn_universe(const char *value)
+{
+    (void)value;
+    return true;
+}
+
+bool validate_dmx_loss(const char *value)
+{
+    (void)value;
+    return true;
+}
+
+bool validate_dmx_loss_timeout(const char *value)
+{
+    (void)value;
+    return true;
+}
+
 bool validate_update_channel(const char *value)
 {
     (void)value;

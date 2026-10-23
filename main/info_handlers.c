@@ -6,6 +6,7 @@
 #include "bridge/port_manager.h"
 #include "bridge/repeater.h"
 #include "bridge/dmx_output.h"
+#include "bridge/dmx_net.h"
 #include "bridge/cache_modbus_server.h"
 #include "wifi_apsta.h"
 #include "config.h"
@@ -370,6 +371,28 @@ esp_err_t info_get_handler(httpd_req_t *req)
             cJSON_AddNumberToObject(port_json, "period_us", (double)dmx.period_us);
             cJSON_AddNumberToObject(port_json, "frames_sent", (double)dmx.frames_sent);
             cJSON_AddNumberToObject(port_json, "uptime_ms", (double)dmx.uptime_ms);
+            // Network sources: one object per protocol plus the loss-policy state.
+            dmx_net_stats_t net = {0};
+            dmx_net_get_stats(i, &net);
+            const dmx_net_proto_stats_t *protos[2] = {&net.artnet, &net.sacn};
+            static const char * const proto_names[2] = {"artnet", "sacn"};
+            for (unsigned p = 0; p < 2; p++) {
+                cJSON *proto_json = cJSON_CreateObject();
+                if (proto_json == NULL) {
+                    continue;
+                }
+                cJSON_AddBoolToObject(proto_json, "enabled", protos[p]->enabled);
+                cJSON_AddNumberToObject(proto_json, "universe", protos[p]->universe);
+                cJSON_AddBoolToObject(proto_json, "active", protos[p]->active);
+                cJSON_AddNumberToObject(proto_json, "packets", (double)protos[p]->packets);
+                cJSON_AddNumberToObject(proto_json, "fps", (double)protos[p]->fps);
+                cJSON_AddStringToObject(proto_json, "last_source", protos[p]->last_source);
+                if (p == 1) {
+                    cJSON_AddNumberToObject(proto_json, "priority", protos[p]->priority);
+                }
+                cJSON_AddItemToObject(port_json, proto_names[p], proto_json);
+            }
+            cJSON_AddBoolToObject(port_json, "signal_lost", net.signal_lost);
             cJSON_AddItemToObject(dmx_json, dmx_port_names[i], port_json);
         }
         cJSON_AddItemToObject(response_json, "dmx", dmx_json);
