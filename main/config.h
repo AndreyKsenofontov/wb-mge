@@ -3,7 +3,12 @@
 
 #define WIFI_CHAN_AP                9
 
-#define BASE_HOSTNAME               "WB-MGE" // generated in setting_items.c: get_dynamic_hostname
+// Default hostname / AP SSID prefix, per model; generated in setting_items.c: get_dynamic_hostname
+#if defined(MODEL_mgu_v1)
+    #define BASE_HOSTNAME           "WB-MGU"
+#else
+    #define BASE_HOSTNAME           "WB-MGE"
+#endif
 
 
 // Default values

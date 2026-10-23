@@ -955,6 +955,12 @@ paths:
                 properties:
                   hostname:
                     type: string
+                  model:
+                    type: string
+                    description: "Device model, e.g. \"WB-MGE v.3\" or \"WB-MGU v.1\"; lets the login page brand itself"
+                  signature:
+                    type: string
+                    description: "Device signature from eFuse (mge_v3, mgu_v1); empty when not programmed"
                     minLength: 1
                     maxLength: 32
                     pattern: '^[a-zA-Z0-9-]+$'

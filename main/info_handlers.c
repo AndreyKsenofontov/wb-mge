@@ -471,6 +471,9 @@ esp_err_t hostname_get_handler(httpd_req_t *req)
         return ESP_OK;
     }
     cJSON_AddStringToObject(response_json, "hostname", hostname);
+    // The model lets the login page brand itself before authentication (WB-MGE vs WB-MGU).
+    cJSON_AddStringToObject(response_json, "model", sys_info.device_name);
+    cJSON_AddStringToObject(response_json, "signature", sys_info.device_signature);
     json_utils_send_response(req, NULL, response_json);
     return ESP_OK;
 }

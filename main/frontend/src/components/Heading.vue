@@ -9,7 +9,7 @@ const { data, isChanged } = useSettings();
 const { locale } = useI18n();
 const head = injectHead();
 
-const prefix = computed(() => data.value?.hostname || 'WB-MGE v.3');
+const prefix = computed(() => data.value?.hostname || 'Wiren Board');
 
 async function updatePageTitle() {
   useHead({

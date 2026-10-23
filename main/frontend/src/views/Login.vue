@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import Logo from '@/assets/logo.svg?component';
 import { useAlerts } from '@/common/alert';
 import { changeLang, languages, Locale } from '@/i18n';
-import { documentation } from '@/common/links';
+import { documentation, documentationMgu } from '@/common/links';
 import type { Auth } from '@/common/types';
 import AlertsWrapper from '@/components/AlertsWrapper.vue';
 import { api } from '@/utils/api';
-import { useHostname } from '@/common/hostname';
+import { isMgu, useHostname } from '@/common/hostname';
 import { hasSession } from '@/common/session';
 
 const { t, locale } = useI18n();
@@ -18,7 +18,11 @@ const route = useRoute();
 const { showAlert } = useAlerts();
 const data = reactive({ login: '', pass: '' });
 const isLoading = ref(false);
-const { hostname } = useHostname();
+const { hostname, model } = useHostname();
+// The WB-MGU build is the DMX gateway: a different chip, hero text and documentation link.
+const mgu = computed(() => isMgu(model.value));
+const chipKind = computed(() => model.value || 'WB-MGE v3');
+const docsLink = computed(() => (mgu.value ? documentationMgu : documentation));
 
 const onLangChange = (e: Event) => {
   changeLang((e.target as HTMLSelectElement).value as Locale);
@@ -49,14 +53,14 @@ const login = async () => {
 
       <div class="login-stack">
         <div v-if="hostname" class="login-chip">
-          <span class="chip-kind">WB-MGE v3</span>
+          <span class="chip-kind">{{ chipKind }}</span>
           <span class="chip-sep"></span>
           <a class="chip-id" :href="`http://${hostname}.local`" target="_blank" rel="noopener noreferrer">{{ hostname }}</a>
         </div>
 
         <div class="login-hero">
-          <h1 v-html="t('heading')"></h1>
-          <p>{{ t('description') }}</p>
+          <h1 v-html="t(mgu ? 'heading_mgu' : 'heading')"></h1>
+          <p>{{ t(mgu ? 'description_mgu' : 'description') }}</p>
         </div>
 
         <form @submit.prevent="login">
@@ -72,7 +76,7 @@ const login = async () => {
             <button type="submit" :disabled="isLoading || !data.login || !data.pass">{{ t('sign_in') }}</button>
           </div>
           <div class="login-links">
-            <a :href="documentation" target="_blank">{{ t('documentation') }}</a>
+            <a :href="docsLink" target="_blank">{{ t('documentation') }}</a>
             <label class="login-lang-wrapper">
               <select v-model="locale" class="login-lang" @change="onLangChange">
                 <option v-for="(lang, code) in languages" :key="code" :value="code">{{ lang }}</option>
@@ -340,7 +344,9 @@ const login = async () => {
     "documentation": "Documentation",
     "wrong_credentials": "Please enter correct login and password",
     "description": "Sign in to configure serial ports, inspect live traffic, and manage the register map that the gateway auto-discovers from the bus.",
-    "heading": "MGE: Your&nbsp;<em>Swiss Army Knife</em>&nbsp;for Modbus"
+    "heading": "MGE: Your&nbsp;<em>Swiss Army Knife</em>&nbsp;for Modbus",
+    "description_mgu": "Sign in to switch the RS-485 port into DMX mode, set the channels and tune the frame timing; the universe is also reachable over Modbus TCP and from a Wiren Board controller.",
+    "heading_mgu": "MGU: Your&nbsp;<em>DMX gateway</em>&nbsp;for Wiren Board"
   },
   "ru": {
     "title": "Интерфейс WB-MGE v3",
@@ -348,7 +354,9 @@ const login = async () => {
     "documentation": "Документация",
     "wrong_credentials": "Введены неверные логин или пароль",
     "description": "Войдите, чтобы настроить последовательные порты, просматривать трафик и управлять картой регистров, автоматически обнаруживаемых шлюзом.",
-    "heading": "MGE:&nbsp;<em>швейцарский нож</em>&nbsp;для Modbus"
+    "heading": "MGE:&nbsp;<em>швейцарский нож</em>&nbsp;для Modbus",
+    "description_mgu": "Войдите, чтобы перевести порт RS-485 в режим DMX, задать каналы и тайминги кадра; вселенная также доступна по Modbus TCP и с контроллера Wiren Board.",
+    "heading_mgu": "MGU:&nbsp;<em>шлюз DMX</em>&nbsp;для Wiren Board"
   },
   "kk": {
     "title": "WB-MGE интерфейсі",
@@ -356,7 +364,9 @@ const login = async () => {
     "documentation": "Құжаттама",
     "wrong_credentials": "Логин немесе құпиясөз қате енгізілді",
     "description": "Сериялық порттарды конфигурациялау, тікелей трафикті тексеру және шлюз автоматты түрде анықтайтын регистрлер картасын басқару үшін кіріңіз.",
-    "heading": "MGE: Modbus үшін сіздің&nbsp;<em>швейцариялық пышағыңыз</em>"
+    "heading": "MGE: Modbus үшін сіздің&nbsp;<em>швейцариялық пышағыңыз</em>",
+    "description_mgu": "RS-485 портын DMX режиміне ауыстыру, арналарды және кадр уақыттарын орнату үшін кіріңіз; ғаламға Modbus TCP арқылы және Wiren Board контроллерінен де қол жеткізуге болады.",
+    "heading_mgu": "MGU: Wiren Board үшін сіздің&nbsp;<em>DMX шлюзіңіз</em>"
   },
   "it": {
     "title": "Interfaccia WB-MGE v3",
@@ -364,7 +374,9 @@ const login = async () => {
     "documentation": "Documentazione",
     "wrong_credentials": "Inserisci login e password corretti",
     "description": "Accedi per configurare le porte seriali, ispezionare il traffico in tempo reale e gestire la mappa dei registri rilevati automaticamente dal gateway.",
-    "heading": "MGE: Il vostro&nbsp;<em>coltellino svizzero</em>&nbsp;per Modbus"
+    "heading": "MGE: Il vostro&nbsp;<em>coltellino svizzero</em>&nbsp;per Modbus",
+    "description_mgu": "Accedi per portare la porta RS-485 in modalità DMX, impostare i canali e regolare la temporizzazione del frame; l'universo è raggiungibile anche via Modbus TCP e da un controller Wiren Board.",
+    "heading_mgu": "MGU: Il vostro&nbsp;<em>gateway DMX</em>&nbsp;per Wiren Board"
   },
   "de": {
     "title": "WB-MGEv3-Oberfläche",
@@ -372,7 +384,9 @@ const login = async () => {
     "documentation": "Dokumentation",
     "wrong_credentials": "Bitte korrekten Benutzernamen und Passwort eingeben",
     "description": "Melden Sie sich an, um serielle Ports zu konfigurieren, den Live-Datenverkehr zu überwachen und die vom Gateway automatisch erkannte Registerkarte zu verwalten.",
-    "heading": "MGE: Ihr&nbsp;<em>Schweizer Taschenmesser</em>&nbsp;für Modbus"
+    "heading": "MGE: Ihr&nbsp;<em>Schweizer Taschenmesser</em>&nbsp;für Modbus",
+    "description_mgu": "Melden Sie sich an, um den RS-485-Port in den DMX-Modus zu schalten, die Kanäle zu setzen und das Frame-Timing einzustellen; das Universum ist auch über Modbus TCP und von einem Wiren-Board-Controller erreichbar.",
+    "heading_mgu": "MGU: Ihr&nbsp;<em>DMX-Gateway</em>&nbsp;für Wiren Board"
   }
 }
 </i18n>

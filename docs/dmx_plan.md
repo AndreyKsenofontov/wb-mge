@@ -105,6 +105,11 @@ DMX добавляется пятым режимом `PM_MODE_DMX` / `"dmx"`. О
 Режим `dmx` добавлен в подписи режима порта (Sidebar, RsStatus, глобальные сообщения) на пяти языках.
 Тесты: `Dmx.integration.test.ts` (10 сценариев).
 
+Брендинг по модели: для `mgu_v1` hostname и SSID точки доступа по умолчанию начинаются с `WB-MGU`
+(`BASE_HOSTNAME` в `config.h`), `GET /hostname` дополнительно отдаёт `model` и `signature`, и страница
+входа показывает модель в чипе, заголовок «MGU: шлюз DMX для Wiren Board» и ссылку на wiki WB-MGU.
+Уже прошитое устройство хранит старый hostname в NVS — сменить можно в настройках.
+
 ## Шаблон wb-mqtt-serial для контроллера Wiren Board
 
 `templates/config-wb-mgu-dmx.json.jinja` — исходник, `templates/config-wb-mgu-dmx.json` — отрендеренный
