@@ -18,7 +18,7 @@ export interface Uptime {
   seconds: number;
 }
 
-export type PortMode = 'disabled' | 'tcp_bridge' | 'passive' | 'repeater';
+export type PortMode = 'disabled' | 'tcp_bridge' | 'passive' | 'repeater' | 'dmx';
 
 export interface RsStatus {
   is_busy: boolean;
@@ -42,6 +42,26 @@ export interface RepeaterStats {
   dropped_1: number;
   // bytes dropped on Port 2
   dropped_2: number;
+}
+
+// Live state of the DMX512 transmitter of one port (GET /info -> dmx.rs485_N, GET /ports/N/dmx).
+export interface DmxStats {
+  // true while the port runs in dmx mode
+  active: boolean;
+  // true while DE is held low: packets are generated but not driven onto the bus
+  tx_disabled: boolean;
+  // data slots per packet (0 when inactive)
+  slots: number;
+  // break-to-break period in use, microseconds (0 when inactive)
+  period_us: number;
+  frames_sent: number;
+  // milliseconds since the output started (0 when inactive)
+  uptime_ms: number;
+}
+
+// GET /ports/N/dmx: the stats plus the universe the output transmits (channel 1 first).
+export interface DmxState extends DmxStats {
+  values: number[];
 }
 
 export interface Info {
@@ -80,6 +100,7 @@ export interface Info {
   rs485_1: RsStatus;
   rs485_2: RsStatus;
   repeater?: RepeaterStats; // optional: older firmware may omit it
+  dmx?: { rs485_1: DmxStats; rs485_2: DmxStats }; // optional: firmware without the dmx mode omits it
   cache_modbus_port: number;
   cache_modbus_server_enabled: boolean;
   cache_value_timeout_s: number;
@@ -117,6 +138,11 @@ export interface RsSettings {
     port: number;
     modbus: boolean;
   };
+  // DMX frame parameters, used when port_mode is 'dmx'. Optional: firmware without the mode omits them.
+  dmx_slots?: number;
+  dmx_refresh?: number;
+  dmx_break?: number;
+  dmx_mab?: number;
 }
 
 export interface Settings {

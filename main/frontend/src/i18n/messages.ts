@@ -7,6 +7,7 @@ export const messages = {
     serial_ports: 'Serial ports',
     tcp_gateway: 'TCP gateway',
     repeater: 'Repeater',
+    dmx: 'DMX',
     sniffer: 'Sniffer',
     register_map: 'Register map',
     system: 'System',
@@ -31,6 +32,7 @@ export const messages = {
     port_mode_tcp_bridge: 'TCP bridge',
     port_mode_passive: 'Passive listen',
     port_mode_repeater: 'Repeater',
+    port_mode_dmx: 'DMX',
   },
   ru: {
     connection_error: 'Ошибка подключения',
@@ -40,6 +42,7 @@ export const messages = {
     serial_ports: 'Последовательные порты',
     tcp_gateway: 'TCP-шлюз',
     repeater: 'Повторитель',
+    dmx: 'DMX',
     sniffer: 'Sniffer',
     register_map: 'Карта регистров',
     system: 'Система',
@@ -64,6 +67,7 @@ export const messages = {
     port_mode_tcp_bridge: 'TCP-мост',
     port_mode_passive: 'Пассивный (прослушка)',
     port_mode_repeater: 'Повторитель',
+    port_mode_dmx: 'DMX',
   },
   kk: {
     connection_error: 'Қосылым қатесі',
@@ -73,6 +77,7 @@ export const messages = {
     serial_ports: 'Сериялық порттар',
     tcp_gateway: 'TCP шлюзі',
     repeater: 'Қайталағыш',
+    dmx: 'DMX',
     sniffer: 'Sniffer',
     register_map: 'Тіркеу картасы',
     system: 'Жүйе',
@@ -97,6 +102,7 @@ export const messages = {
     port_mode_tcp_bridge: 'TCP көпір',
     port_mode_passive: 'Пассивті тыңдау',
     port_mode_repeater: 'Қайталағыш',
+    port_mode_dmx: 'DMX',
   },
   it: {
     connection_error: 'Errore di connessione',
@@ -106,6 +112,7 @@ export const messages = {
     serial_ports: 'Porte seriali',
     tcp_gateway: 'Gateway TCP',
     repeater: 'Ripetitore',
+    dmx: 'DMX',
     sniffer: 'Sniffer',
     register_map: 'Mappa registri',
     system: 'Sistema',
@@ -130,6 +137,7 @@ export const messages = {
     port_mode_tcp_bridge: 'Bridge TCP',
     port_mode_passive: 'Ascolto passivo',
     port_mode_repeater: 'Ripetitore',
+    port_mode_dmx: 'DMX',
   },
   de: {
     connection_error: 'Verbindungsfehler',
@@ -139,6 +147,7 @@ export const messages = {
     serial_ports: 'Serielle Schnittst.',
     tcp_gateway: 'TCP-Gateway',
     repeater: 'Repeater',
+    dmx: 'DMX',
     sniffer: 'Sniffer',
     register_map: 'Register-Karte',
     system: 'System',
@@ -163,5 +172,6 @@ export const messages = {
     port_mode_tcp_bridge: 'TCP-Bridge',
     port_mode_passive: 'Passives Mithören',
     port_mode_repeater: 'Repeater',
+    port_mode_dmx: 'DMX',
   }
 };

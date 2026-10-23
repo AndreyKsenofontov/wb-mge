@@ -18,6 +18,7 @@ import ActivityIcon from '@/assets/activityIcon.svg?component';
 import PlugIcon from '@/assets/plugIcon.svg?component';
 import GridSidebarIcon from '@/assets/gridSidebarIcon.svg?component';
 import RepeatIcon from '@/assets/repeatIcon.svg?component';
+import DmxIcon from '@/assets/dmxIcon.svg?component';
 import { useHostname } from '@/common/hostname';
 import { useInfo } from '@/common/info';
 import { useSettings } from '@/common/settings';
@@ -32,6 +33,7 @@ const MENU_ICONS: Record<string, Component> = {
   plug: PlugIcon,
   grid: GridSidebarIcon,
   repeat: RepeatIcon,
+  dmx: DmxIcon,
 };
 
 function getMenuIcon(key: unknown): Component | undefined {
@@ -506,7 +508,8 @@ watch(
     "port_mode_disabled": "Disabled",
     "port_mode_tcp_bridge": "TCP bridge",
     "port_mode_passive": "Passive listen",
-    "port_mode_repeater": "Repeater"
+    "port_mode_repeater": "Repeater",
+    "port_mode_dmx": "DMX"
   },
   "ru": {
     "group_overview": "Обзор",
@@ -526,7 +529,8 @@ watch(
     "port_mode_disabled": "Отключён",
     "port_mode_tcp_bridge": "TCP-мост",
     "port_mode_passive": "Пассивный (прослушка)",
-    "port_mode_repeater": "Повторитель"
+    "port_mode_repeater": "Повторитель",
+    "port_mode_dmx": "DMX"
   },
   "kk": {
     "group_overview": "Шолу",
@@ -546,7 +550,8 @@ watch(
     "port_mode_disabled": "Өшірілген",
     "port_mode_tcp_bridge": "TCP көпір",
     "port_mode_passive": "Пассивті тыңдау",
-    "port_mode_repeater": "Қайталағыш"
+    "port_mode_repeater": "Қайталағыш",
+    "port_mode_dmx": "DMX"
   },
   "it": {
     "group_overview": "Panoramica",
@@ -566,7 +571,8 @@ watch(
     "port_mode_disabled": "Disabilitato",
     "port_mode_tcp_bridge": "Bridge TCP",
     "port_mode_passive": "Ascolto passivo",
-    "port_mode_repeater": "Ripetitore"
+    "port_mode_repeater": "Ripetitore",
+    "port_mode_dmx": "DMX"
   },
   "de": {
     "group_overview": "Übersicht",
@@ -586,7 +592,8 @@ watch(
     "port_mode_disabled": "Deaktiviert",
     "port_mode_tcp_bridge": "TCP-Bridge",
     "port_mode_passive": "Passives Mithören",
-    "port_mode_repeater": "Repeater"
+    "port_mode_repeater": "Repeater",
+    "port_mode_dmx": "DMX"
   }
 }
 </i18n>

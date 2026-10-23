@@ -9,6 +9,7 @@ import Network from '@/views/Network.vue';
 import SerialPorts from '@/views/SerialPorts.vue';
 import RegisterMap from '@/views/RegisterMap.vue';
 import Repeater from '@/views/Repeater.vue';
+import Dmx from '@/views/Dmx.vue';
 import Sniffer from '@/views/Sniffer.vue';
 import System from '@/views/System.vue';
 import TcpGateway from '@/views/TcpGateway.vue';
@@ -93,6 +94,20 @@ const router = createRouter({
       name: 'repeater',
       component: Repeater,
       meta: { requiresAuth: true, menuName: 'repeater', menuGroup: 'modbus_tools', menuIcon: 'repeat' },
+      beforeEnter: [checkSession, async () => {
+        const { fetchInfo } = useInfo();
+        const { refresh } = useSettings();
+        await Promise.all([
+          fetchInfo(),
+          refresh(),
+        ]);
+      }],
+    },
+    {
+      path: '/dmx',
+      name: 'dmx',
+      component: Dmx,
+      meta: { requiresAuth: true, menuName: 'dmx', menuGroup: 'modbus_tools', menuIcon: 'dmx' },
       beforeEnter: [checkSession, async () => {
         const { fetchInfo } = useInfo();
         const { refresh } = useSettings();
