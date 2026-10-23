@@ -110,6 +110,23 @@ DMX добавляется пятым режимом `PM_MODE_DMX` / `"dmx"`. О
 входа показывает модель в чипе, заголовок «MGU: шлюз DMX для Wiren Board» и ссылку на wiki WB-MGU.
 Уже прошитое устройство хранит старый hostname в NVS — сменить можно в настройках.
 
+## Этап 3: сетевые источники Art-Net и sACN (`main/bridge/dmx_net*.c`)
+
+- `dmx_net_proto.c` — чистый разбор пакетов (хостовые тесты): Art-Net `ArtDmx`/`ArtPoll`, сборка `ArtPollReply`;
+  E1.31 data-пакет (root/framing/DMP), multicast-группа universe.
+- `dmx_net.c` — одна задача-приёмник на оба порта: UDP 6454 и 5568, `select()`, IGMP-членство на каждый
+  настроенный universe sACN, ответ на `ArtPoll` (по одному на порт, BindIndex 1/2), приоритет источников sACN
+  (следуем источнику с наибольшим приоритетом, таймаут 2,5 с, `stream terminated` освобождает universe).
+  Принятые слоты пишутся через `dmx_output_set_channels`; Modbus TCP и страница работают параллельно
+  («последний писавший»).
+- Потеря сигнала: `dmx_loss` = `hold` | `blackout`, `dmx_loss_timeout` секунд.
+- Настройки на порт (`rs485_N` в `/settings`): `dmx_artnet`, `dmx_artnet_universe` (15-битный port-address),
+  `dmx_sacn`, `dmx_sacn_universe`, `dmx_loss`, `dmx_loss_timeout`. Смена перезапускает порт.
+- `/info` → `dmx.rs485_N.artnet|sacn`: `enabled, universe, active, packets, fps, last_source` (+`priority` у sACN),
+  `signal_lost`.
+- Страница DMX: карточка «Сетевые источники» с галочками, universe, политикой потери и живой статистикой.
+- Проверка с ПК: `scripts/dmx_net_send.py artnet <ip> <port-address>`, `… sacn multicast <universe>`, `… poll broadcast`.
+
 ## Шаблон wb-mqtt-serial для контроллера Wiren Board
 
 `templates/config-wb-mgu-dmx.json.jinja` — исходник, `templates/config-wb-mgu-dmx.json` — отрендеренный

@@ -54,6 +54,12 @@ function makeSettings(): Settings {
     dmx_refresh: 40,
     dmx_break: 176,
     dmx_mab: 16,
+    dmx_artnet: false,
+    dmx_artnet_universe: 0,
+    dmx_sacn: false,
+    dmx_sacn_universe: 1,
+    dmx_loss: 'hold' as const,
+    dmx_loss_timeout: 3,
   });
   return {
     hostname: 'test',
@@ -98,6 +104,9 @@ function makeStats(active: boolean, extra: Partial<DmxStats> = {}): DmxStats {
     period_us: active ? 25000 : 0,
     frames_sent: active ? 1234 : 0,
     uptime_ms: active ? 61_000 : 0,
+    artnet: { enabled: false, universe: 0, active: false, packets: 0, fps: 0, last_source: '' },
+    sacn: { enabled: false, universe: 1, active: false, packets: 0, fps: 0, last_source: '', priority: 0 },
+    signal_lost: false,
     ...extra,
   };
 }
@@ -332,6 +341,53 @@ describe('DMX-I-006: firmware without dmx stats', () => {
     expect(toggleButton(wrapper).classes()).toContain('off');
     expect(wrapper.text().replace(/\s+/g, ' ')).toContain('0 Hz');
     expect(wrapper.find('#rs485_1-dmx_slots').exists()).toBe(false);
+
+    wrapper.unmount();
+  });
+});
+
+describe('DMX-I-008: network sources', () => {
+  it('the Art-Net switch and universe are bound to the port settings and saved as a whole', async () => {
+    infoRef.value = makeInfo({ port1Mode: 'dmx', port2Mode: 'disabled' });
+    const wrapper = await mountPage();
+
+    const artnetSwitch = wrapper.find('#rs485_1-dmx_artnet');
+    expect(artnetSwitch.exists()).toBe(true);
+    await artnetSwitch.setValue(true);
+    const universe = wrapper.find('#rs485_1-dmx_artnet_universe');
+    await universe.setValue(17);
+    expect(settingsData.value?.rs485_1.dmx_artnet).toBe(true);
+    expect(settingsData.value?.rs485_1.dmx_artnet_universe).toBe(17);
+
+    await wrapper.find('.dmx-net form').trigger('submit');
+    await flushPromises();
+    expect(updateSettingsMock).toHaveBeenCalledWith({ rs485_1: expect.objectContaining({ dmx_artnet: true, dmx_artnet_universe: 17 }) });
+
+    wrapper.unmount();
+  });
+
+  it('receiver statistics render per protocol', async () => {
+    const info = makeInfo({ port1Mode: 'dmx', port2Mode: 'disabled' });
+    info.dmx!.rs485_1.artnet = { enabled: true, universe: 3, active: true, packets: 4321, fps: 40, last_source: '192.168.13.5:6454' };
+    info.dmx!.rs485_1.sacn = { enabled: true, universe: 7, active: false, packets: 0, fps: 0, last_source: '', priority: 0 };
+    infoRef.value = info;
+    const wrapper = await mountPage();
+
+    const text = wrapper.text().replace(/\s+/g, ' ');
+    expect(text).toContain('192.168.13.5:6454');
+    expect(text).toContain('4321');
+    expect(wrapper.findAll('.dmx-net-dotActive')).toHaveLength(1);
+
+    wrapper.unmount();
+  });
+
+  it('firmware without the receivers shows no network card', async () => {
+    settingsData.value = makeSettings();
+    delete settingsData.value.rs485_1.dmx_artnet;
+    infoRef.value = makeInfo({ port1Mode: 'dmx', port2Mode: 'disabled' });
+    const wrapper = await mountPage();
+
+    expect(wrapper.find('.dmx-net').exists()).toBe(false);
 
     wrapper.unmount();
   });

@@ -5,13 +5,14 @@ import { useSettings } from '@/common/settings';
 import { useInfo } from '@/common/info';
 import { useAlerts } from '@/common/alert';
 import { useOptimisticToggle } from '@/common/useOptimisticToggle';
-import type { DmxState, DmxStats, RsSettings } from '@/common/types';
+import type { DmxLossPolicy, DmxNetSource, DmxState, DmxStats, RsSettings } from '@/common/types';
 import { api } from '@/utils/api';
 import { formatUptime } from '@/utils/repeaterFormat';
 import Button from '@/components/Button.vue';
 import Heading from '@/components/Heading.vue';
 import InputNumber from '@/components/InputNumber.vue';
 import Layout from '@/components/Layout.vue';
+import Switch from '@/components/Switch.vue';
 
 type PortNumber = 1 | 2;
 type PortKey = 'rs485_1' | 'rs485_2';
@@ -26,6 +27,12 @@ const DMX_BREAK_MIN = 92;
 const DMX_BREAK_MAX = 1000;
 const DMX_MAB_MIN = 12;
 const DMX_MAB_MAX = 1000;
+const ARTNET_UNIVERSE_MAX = 32767;
+const SACN_UNIVERSE_MIN = 1;
+const SACN_UNIVERSE_MAX = 63999;
+const LOSS_TIMEOUT_MIN = 1;
+const LOSS_TIMEOUT_MAX = 3600;
+const LOSS_POLICIES: DmxLossPolicy[] = ['hold', 'blackout'];
 // Channels shown before the user asks for the whole universe.
 const DEFAULT_VISIBLE_CHANNELS = 32;
 // The universe is re-read this often so writes from Modbus / the controller show up.
@@ -81,6 +88,12 @@ const uptimeS = computed<number>(() => (stats.value?.uptime_ms ?? 0) / 1000);
 const portSettings = computed<RsSettings | undefined>(() => settings.value?.[portKey.value]);
 // Firmware without the dmx mode reports no dmx_* fields: hide the form instead of saving NaN.
 const hasFrameSettings = computed<boolean>(() => portSettings.value?.dmx_slots !== undefined);
+// Likewise for the network sources, which came with a later firmware than the dmx mode itself.
+const hasNetSettings = computed<boolean>(() => portSettings.value?.dmx_artnet !== undefined);
+
+// Receiver statistics of the selected port; undefined on firmware without the receivers.
+const artnet = computed<DmxNetSource | undefined>(() => stats.value?.artnet);
+const sacn = computed<DmxNetSource | undefined>(() => stats.value?.sacn);
 
 const isSaveDisabled = computed(() => isLoading.value || !isChanged([portKey.value]));
 
@@ -265,6 +278,62 @@ watch(port, () => {
         </section>
       </div>
 
+      <section v-if="hasNetSettings && portSettings" class="card dmx-net">
+        <form @submit.prevent="saveFrameSettings">
+          <div class="card-header">
+            <div class="card-title-wrap">
+              <div class="title">{{ t('net_sources') }}</div>
+              <div class="sub">{{ t('net_sources_sub') }}</div>
+            </div>
+            <Button type="submit" :is-loading="isLoading" :disabled="isSaveDisabled">{{ t('save') }}</Button>
+          </div>
+          <div class="card-body">
+            <div class="field dmx-net-row">
+              <label :for="`${portKey}-dmx_artnet`" class="dmx-net-label">
+                <Switch :id="`${portKey}-dmx_artnet`" v-model="portSettings.dmx_artnet" class="dmx-net-switch" />
+                <span>{{ t('artnet') }}</span>
+              </label>
+              <InputNumber :id="`${portKey}-dmx_artnet_universe`" v-model="portSettings.dmx_artnet_universe" :min="0" :max="ARTNET_UNIVERSE_MAX" :aria-label="t('artnet_universe')" />
+              <div class="hint">{{ t('artnet_universe_hint') }}</div>
+              <div v-if="artnet" class="dmx-net-status">
+                <span :class="['dmx-net-dot', { 'dmx-net-dotActive': artnet.active }]"></span>
+                <span>{{ artnet.active ? t('src_active') : t('src_idle') }}</span>
+                <span class="mono">{{ artnet.fps }} {{ t('src_fps') }}</span>
+                <span class="mono">{{ artnet.packets }} {{ t('src_packets') }}</span>
+                <span v-if="artnet.last_source" class="mono">{{ artnet.last_source }}</span>
+              </div>
+            </div>
+            <div class="field dmx-net-row">
+              <label :for="`${portKey}-dmx_sacn`" class="dmx-net-label">
+                <Switch :id="`${portKey}-dmx_sacn`" v-model="portSettings.dmx_sacn" class="dmx-net-switch" />
+                <span>{{ t('sacn') }}</span>
+              </label>
+              <InputNumber :id="`${portKey}-dmx_sacn_universe`" v-model="portSettings.dmx_sacn_universe" :min="SACN_UNIVERSE_MIN" :max="SACN_UNIVERSE_MAX" :aria-label="t('sacn_universe')" />
+              <div class="hint">{{ t('sacn_universe_hint') }}</div>
+              <div v-if="sacn" class="dmx-net-status">
+                <span :class="['dmx-net-dot', { 'dmx-net-dotActive': sacn.active }]"></span>
+                <span>{{ sacn.active ? t('src_active') : t('src_idle') }}</span>
+                <span class="mono">{{ sacn.fps }} {{ t('src_fps') }}</span>
+                <span class="mono">{{ sacn.packets }} {{ t('src_packets') }}</span>
+                <span v-if="sacn.last_source" class="mono">{{ sacn.last_source }}</span>
+                <span v-if="sacn.active" class="mono">{{ t('src_priority') }} {{ sacn.priority }}</span>
+              </div>
+            </div>
+            <div class="field">
+              <label :for="`${portKey}-dmx_loss`">{{ t('loss') }}</label>
+              <select :id="`${portKey}-dmx_loss`" v-model="portSettings.dmx_loss">
+                <option v-for="policy in LOSS_POLICIES" :key="policy" :value="policy">{{ t(`loss_${policy}`) }}</option>
+              </select>
+            </div>
+            <div class="field">
+              <label :for="`${portKey}-dmx_loss_timeout`">{{ t('loss_timeout') }}</label>
+              <InputNumber :id="`${portKey}-dmx_loss_timeout`" v-model="portSettings.dmx_loss_timeout" :min="LOSS_TIMEOUT_MIN" :max="LOSS_TIMEOUT_MAX" />
+              <div v-if="stats?.signal_lost" class="hint dmx-warn">{{ t('signal_lost') }}</div>
+            </div>
+          </div>
+        </form>
+      </section>
+
       <section class="card">
         <div class="card-header">
           <div class="card-title-wrap">
@@ -424,6 +493,39 @@ watch(port, () => {
   gap: 8px;
 }
 
+.dmx-net {
+  margin-bottom: 16px;
+}
+
+.dmx-net-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.dmx-net-status {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: -4px;
+}
+
+.dmx-net-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+
+.dmx-net-dotActive {
+  background: var(--primary-color);
+}
+
 .dmx-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -503,7 +605,25 @@ watch(port, () => {
     "full_on": "Visible to 255",
     "blackout": "Blackout",
     "show_all": "Show all {n} channels",
-    "show_less": "Show the first {n} channels"
+    "show_less": "Show the first {n} channels",
+    "net_sources": "Network sources",
+    "net_sources_sub": "Pull packets from a console or software into this port",
+    "artnet": "Art-Net (UDP 6454)",
+    "artnet_universe": "Art-Net port-address",
+    "artnet_universe_hint": "15-bit port-address: Net × 256 + Sub-Net × 16 + Universe (0–32767). The gateway answers ArtPoll, so consoles find it.",
+    "sacn": "sACN / E1.31 (UDP 5568)",
+    "sacn_universe": "sACN universe",
+    "sacn_universe_hint": "Universe 1–63999; the gateway joins the multicast group 239.255.x.y and follows the highest-priority source.",
+    "loss": "When the network stops",
+    "loss_hold": "Keep the last values",
+    "loss_blackout": "Blackout",
+    "loss_timeout": "Signal loss timeout, s",
+    "src_active": "receiving",
+    "src_idle": "no packets",
+    "src_fps": "pkt/s",
+    "src_packets": "total",
+    "src_priority": "priority",
+    "signal_lost": "No network packets for longer than the timeout: the loss policy has been applied"
   },
   "ru": {
     "title": "DMX",
@@ -534,7 +654,25 @@ watch(port, () => {
     "full_on": "Видимые на 255",
     "blackout": "Погасить всё",
     "show_all": "Показать все {n} каналов",
-    "show_less": "Показать первые {n} каналов"
+    "show_less": "Показать первые {n} каналов",
+    "net_sources": "Сетевые источники",
+    "net_sources_sub": "Приём пакетов от пульта или программы в этот порт",
+    "artnet": "Art-Net (UDP 6454)",
+    "artnet_universe": "Адрес порта Art-Net",
+    "artnet_universe_hint": "15-битный адрес порта: Net × 256 + Sub-Net × 16 + Universe (0–32767). Шлюз отвечает на ArtPoll, пульты его находят.",
+    "sacn": "sACN / E1.31 (UDP 5568)",
+    "sacn_universe": "Universe sACN",
+    "sacn_universe_hint": "Universe 1–63999; шлюз вступает в multicast-группу 239.255.x.y и следует источнику с наибольшим приоритетом.",
+    "loss": "Если сеть замолчала",
+    "loss_hold": "Держать последние значения",
+    "loss_blackout": "Погасить всё",
+    "loss_timeout": "Таймаут потери сигнала, с",
+    "src_active": "приём идёт",
+    "src_idle": "пакетов нет",
+    "src_fps": "пак/с",
+    "src_packets": "всего",
+    "src_priority": "приоритет",
+    "signal_lost": "Пакетов из сети нет дольше таймаута: применена политика потери сигнала"
   },
   "kk": {
     "title": "DMX",
@@ -565,7 +703,25 @@ watch(port, () => {
     "full_on": "Көрінетіндерді 255-ке",
     "blackout": "Бәрін сөндіру",
     "show_all": "Барлық {n} арнаны көрсету",
-    "show_less": "Алғашқы {n} арнаны көрсету"
+    "show_less": "Алғашқы {n} арнаны көрсету",
+    "net_sources": "Желілік көздер",
+    "net_sources_sub": "Пульттен немесе бағдарламадан пакеттерді осы портқа қабылдау",
+    "artnet": "Art-Net (UDP 6454)",
+    "artnet_universe": "Art-Net порт мекенжайы",
+    "artnet_universe_hint": "15 биттік порт мекенжайы: Net × 256 + Sub-Net × 16 + Universe (0–32767). Шлюз ArtPoll-ға жауап береді, пульттер оны табады.",
+    "sacn": "sACN / E1.31 (UDP 5568)",
+    "sacn_universe": "sACN universe",
+    "sacn_universe_hint": "Universe 1–63999; шлюз 239.255.x.y multicast тобына қосылады және ең жоғары басымдықты көзге ереді.",
+    "loss": "Желі үнсіз қалса",
+    "loss_hold": "Соңғы мәндерді сақтау",
+    "loss_blackout": "Бәрін сөндіру",
+    "loss_timeout": "Сигнал жоғалу таймауты, с",
+    "src_active": "қабылдау жүріп жатыр",
+    "src_idle": "пакеттер жоқ",
+    "src_fps": "пак/с",
+    "src_packets": "барлығы",
+    "src_priority": "басымдық",
+    "signal_lost": "Желіден пакеттер таймауттан ұзақ келмеді: сигнал жоғалу саясаты қолданылды"
   },
   "it": {
     "title": "DMX",
@@ -596,7 +752,25 @@ watch(port, () => {
     "full_on": "Visibili a 255",
     "blackout": "Blackout",
     "show_all": "Mostra tutti i {n} canali",
-    "show_less": "Mostra i primi {n} canali"
+    "show_less": "Mostra i primi {n} canali",
+    "net_sources": "Sorgenti di rete",
+    "net_sources_sub": "Riceve i pacchetti di una console o di un software su questa porta",
+    "artnet": "Art-Net (UDP 6454)",
+    "artnet_universe": "Port-address Art-Net",
+    "artnet_universe_hint": "Port-address a 15 bit: Net × 256 + Sub-Net × 16 + Universe (0–32767). Il gateway risponde ad ArtPoll, quindi le console lo trovano.",
+    "sacn": "sACN / E1.31 (UDP 5568)",
+    "sacn_universe": "Universe sACN",
+    "sacn_universe_hint": "Universe 1–63999; il gateway entra nel gruppo multicast 239.255.x.y e segue la sorgente con la priorità più alta.",
+    "loss": "Quando la rete si ferma",
+    "loss_hold": "Mantieni gli ultimi valori",
+    "loss_blackout": "Blackout",
+    "loss_timeout": "Timeout di perdita del segnale, s",
+    "src_active": "in ricezione",
+    "src_idle": "nessun pacchetto",
+    "src_fps": "pkt/s",
+    "src_packets": "totale",
+    "src_priority": "priorità",
+    "signal_lost": "Nessun pacchetto di rete oltre il timeout: è stata applicata la politica di perdita del segnale"
   },
   "de": {
     "title": "DMX",
@@ -627,7 +801,25 @@ watch(port, () => {
     "full_on": "Sichtbare auf 255",
     "blackout": "Blackout",
     "show_all": "Alle {n} Kanäle anzeigen",
-    "show_less": "Die ersten {n} Kanäle anzeigen"
+    "show_less": "Die ersten {n} Kanäle anzeigen",
+    "net_sources": "Netzwerkquellen",
+    "net_sources_sub": "Pakete eines Pults oder einer Software auf diesem Port empfangen",
+    "artnet": "Art-Net (UDP 6454)",
+    "artnet_universe": "Art-Net-Port-Adresse",
+    "artnet_universe_hint": "15-Bit-Port-Adresse: Net × 256 + Sub-Net × 16 + Universe (0–32767). Das Gateway beantwortet ArtPoll, Pulte finden es.",
+    "sacn": "sACN / E1.31 (UDP 5568)",
+    "sacn_universe": "sACN-Universe",
+    "sacn_universe_hint": "Universe 1–63999; das Gateway tritt der Multicast-Gruppe 239.255.x.y bei und folgt der Quelle mit der höchsten Priorität.",
+    "loss": "Wenn das Netzwerk verstummt",
+    "loss_hold": "Letzte Werte halten",
+    "loss_blackout": "Blackout",
+    "loss_timeout": "Signalverlust-Timeout, s",
+    "src_active": "empfängt",
+    "src_idle": "keine Pakete",
+    "src_fps": "Pkt/s",
+    "src_packets": "gesamt",
+    "src_priority": "Priorität",
+    "signal_lost": "Länger als das Timeout keine Netzwerkpakete: die Verlustregel wurde angewendet"
   }
 }
 </i18n>

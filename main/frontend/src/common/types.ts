@@ -57,7 +57,29 @@ export interface DmxStats {
   frames_sent: number;
   // milliseconds since the output started (0 when inactive)
   uptime_ms: number;
+  // network receivers; optional: firmware before the Art-Net/sACN support omits them
+  artnet?: DmxNetSource;
+  sacn?: DmxNetSource;
+  // the loss policy fired and no packet arrived since
+  signal_lost?: boolean;
 }
+
+// State of one network DMX receiver of a port (Art-Net or sACN).
+export interface DmxNetSource {
+  enabled: boolean;
+  universe: number;
+  // a packet arrived within the last 2.5 s
+  active: boolean;
+  packets: number;
+  // packets accepted during the previous second
+  fps: number;
+  // "ip:port" of the last accepted packet, '' if none
+  last_source: string;
+  // sACN only: priority of the source being followed
+  priority?: number;
+}
+
+export type DmxLossPolicy = 'hold' | 'blackout';
 
 // GET /ports/N/dmx: the stats plus the universe the output transmits (channel 1 first).
 export interface DmxState extends DmxStats {
@@ -143,6 +165,13 @@ export interface RsSettings {
   dmx_refresh?: number;
   dmx_break?: number;
   dmx_mab?: number;
+  // Network sources of a dmx port. Optional: firmware before Art-Net/sACN support omits them.
+  dmx_artnet?: boolean;
+  dmx_artnet_universe?: number;
+  dmx_sacn?: boolean;
+  dmx_sacn_universe?: number;
+  dmx_loss?: DmxLossPolicy;
+  dmx_loss_timeout?: number;
 }
 
 export interface Settings {
