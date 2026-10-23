@@ -31,6 +31,7 @@
                 "address": 1001,
                 "type": "switch",
                 "readonly": true,
+                "poll_interval": 1000,
                 "group": "g_general"
             },
             {
@@ -39,6 +40,7 @@
                 "address": 1002,
                 "type": "value",
                 "readonly": true,
+                "poll_interval": 1000,
                 "group": "g_general"
             },
             {
@@ -48,6 +50,7 @@
                 "type": "value",
                 "units": "Hz",
                 "readonly": true,
+                "poll_interval": 1000,
                 "group": "g_general"
             },
             {
@@ -58,6 +61,7 @@
                 "word_order": "little_endian",
                 "type": "value",
                 "readonly": true,
+                "poll_interval": 1000,
                 "group": "g_general"
             },
             {
@@ -66,6 +70,7 @@
                 "address": 1006,
                 "type": "switch",
                 "readonly": true,
+                "poll_interval": 1000,
                 "group": "g_general"
             },
             {
