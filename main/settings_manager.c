@@ -89,6 +89,11 @@ static const setting_mapping_t rs485_base_mappings[] = {
     // records intent is not.
     {"port_mode", "port_mode"},
     {"cache_en", "cache_en"},     // -> NVS cache_en_N  (BOOL,   validate_bool)
+    // DMX output parameters, applied when port_mode == dmx
+    {"dmx_slots", "dmx_slots"},
+    {"dmx_refresh", "dmx_refresh"},
+    {"dmx_break", "dmx_break"},
+    {"dmx_mab", "dmx_mab"},
 };
 
 static const setting_mapping_t rs485_bridge_mappings[] = {

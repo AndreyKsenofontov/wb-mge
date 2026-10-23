@@ -8,6 +8,13 @@ static char mock_port_mode[BRIDGES_COUNT][SETTING_ITEM_MAX_STR_LEN];
 bool mock_cache_server_enabled = false;
 int mock_cache_port = 0;
 
+/* Stored mock values for the per-port DMX parameters (dmx_*_1 / dmx_*_2). Default to the
+ * production defaults so a port can enter DMX mode without every test setting them. */
+int mock_dmx_slots[BRIDGES_COUNT] = {512, 512};
+int mock_dmx_refresh[BRIDGES_COUNT] = {40, 40};
+int mock_dmx_break[BRIDGES_COUNT] = {176, 176};
+int mock_dmx_mab[BRIDGES_COUNT] = {16, 16};
+
 /* Stored mock values for per-port cache overlay (cache_en_1 / cache_en_2) */
 bool mock_cache_en[BRIDGES_COUNT] = {false, false};
 
@@ -106,6 +113,17 @@ int setting_items_read_int(const char *key)
     if (strcmp(key, KEY_CACHE_MODBUS_PORT) == 0) {
         return mock_cache_port;
     }
+    static const struct { const char *key; int *store; } dmx_keys[] = {
+        {KEY_DMX_SLOTS_1, &mock_dmx_slots[0]},     {KEY_DMX_SLOTS_2, &mock_dmx_slots[1]},
+        {KEY_DMX_REFRESH_1, &mock_dmx_refresh[0]}, {KEY_DMX_REFRESH_2, &mock_dmx_refresh[1]},
+        {KEY_DMX_BREAK_1, &mock_dmx_break[0]},     {KEY_DMX_BREAK_2, &mock_dmx_break[1]},
+        {KEY_DMX_MAB_1, &mock_dmx_mab[0]},         {KEY_DMX_MAB_2, &mock_dmx_mab[1]},
+    };
+    for (size_t i = 0; i < sizeof(dmx_keys) / sizeof(dmx_keys[0]); i++) {
+        if (strcmp(key, dmx_keys[i].key) == 0) {
+            return *dmx_keys[i].store;
+        }
+    }
     return 0;
 }
 
@@ -146,6 +164,12 @@ void mock_setting_items_reset(void)
     mock_cache_port = 0;
     mock_cache_en[0] = false;
     mock_cache_en[1] = false;
+    for (unsigned i = 0; i < BRIDGES_COUNT; i++) {
+        mock_dmx_slots[i] = 512;
+        mock_dmx_refresh[i] = 40;
+        mock_dmx_break[i] = 176;
+        mock_dmx_mab[i] = 16;
+    }
     mock_setting_items_save_called = 0;
     mock_setting_items_save_bool_called = 0;
     mock_setting_items_save_should_fail = false;

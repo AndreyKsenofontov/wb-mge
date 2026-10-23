@@ -9,10 +9,12 @@ UNITTEST_DIR = ..
 
 # Source files to be checked
 TESTED_SRC += $(PROJ_DIR)/main/bridge/port_manager.c
+AUX_SRC += $(PROJ_DIR)/main/bridge/dmx_frame.c
 
 # Auxiliary source files used in this test
 AUX_SRC += mocks/bridge.c
 AUX_SRC += mocks/repeater.c
+AUX_SRC += mocks/dmx_output.c
 AUX_SRC += mocks/sniffer.c
 AUX_SRC += mocks/cache_multimaster.c
 AUX_SRC += mocks/cache_modbus_server.c

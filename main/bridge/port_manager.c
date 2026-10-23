@@ -1,6 +1,7 @@
 #include "port_manager.h"
 #include "bridge.h"
 #include "repeater.h"
+#include "dmx_output.h"
 #include "sniffer.h"
 #include "cache_multimaster.h"
 #include "cache_modbus_server.h"
@@ -42,6 +43,8 @@ typedef struct {
     serial_config_t serial_cfg_at_init; // Serial config snapshot taken at port init time,
                                         // used to detect serial parameter changes for
                                         // PASSIVE mode.
+    dmx_frame_config_t dmx_cfg_at_init; // DMX config snapshot taken at port init time,
+                                        // used to detect DMX parameter changes.
     SemaphoreHandle_t init_mutex;       // Serialises port_init_mode/port_deinit_mode against
                                         // races between the HTTP set_mode handler, the async
                                         // settings_update_task and the boot loop in
@@ -290,6 +293,7 @@ const char *port_manager_mode_to_str(pm_mode_t mode)
     case PM_MODE_TCP_BRIDGE: return PORT_MODE_TCP_BRIDGE_STR;
     case PM_MODE_PASSIVE:    return PORT_MODE_PASSIVE_STR;
     case PM_MODE_REPEATER:   return PORT_MODE_REPEATER_STR;
+    case PM_MODE_DMX:        return PORT_MODE_DMX_STR;
     default:                 return "unknown";
     }
 }
@@ -307,6 +311,9 @@ static pm_mode_t str_to_pm_mode(const char *str)
     }
     if (strncmp(str, PORT_MODE_REPEATER_STR, SETTING_ITEM_MAX_STR_LEN) == 0) {
         return PM_MODE_REPEATER;
+    }
+    if (strncmp(str, PORT_MODE_DMX_STR, SETTING_ITEM_MAX_STR_LEN) == 0) {
+        return PM_MODE_DMX;
     }
     return PM_MODE_DISABLED;
 }
@@ -341,6 +348,26 @@ static pm_mode_t read_port_mode_from_nvs(unsigned index)
         return PM_MODE_DISABLED;
     }
     return str_to_pm_mode(value);
+}
+
+// Read the DMX output parameters of a port from NVS.
+static esp_err_t read_dmx_config(unsigned index, dmx_frame_config_t *cfg)
+{
+    static const char * const slots_keys[BRIDGES_COUNT] = {KEY_DMX_SLOTS_1, KEY_DMX_SLOTS_2};
+    static const char * const refresh_keys[BRIDGES_COUNT] = {KEY_DMX_REFRESH_1, KEY_DMX_REFRESH_2};
+    static const char * const break_keys[BRIDGES_COUNT] = {KEY_DMX_BREAK_1, KEY_DMX_BREAK_2};
+    static const char * const mab_keys[BRIDGES_COUNT] = {KEY_DMX_MAB_1, KEY_DMX_MAB_2};
+
+    memset(cfg, 0, sizeof(*cfg));
+    cfg->slots = (uint16_t)setting_items_read_int(slots_keys[index]);
+    cfg->refresh_hz = (uint16_t)setting_items_read_int(refresh_keys[index]);
+    cfg->break_us = (uint16_t)setting_items_read_int(break_keys[index]);
+    cfg->mab_us = (uint16_t)setting_items_read_int(mab_keys[index]);
+    if (!dmx_frame_config_valid(cfg)) {
+        ESP_LOGE(TAG, "Port[%u]: invalid DMX config in NVS", index + 1);
+        return ESP_ERR_INVALID_STATE;
+    }
+    return ESP_OK;
 }
 
 // Return the serial_desc for the given port regardless of which mode owns it.
@@ -418,6 +445,25 @@ static esp_err_t port_init_mode(unsigned index, pm_mode_t mode)
         sniffer_attach(index, pm_ctx[index].serial_desc);
         // Snapshot serial config to detect later parameter changes.
         bridge_read_serial_config(index, &pm_ctx[index].serial_cfg_at_init);
+        break;
+    }
+
+    case PM_MODE_DMX: {
+        // DMX owns the UART directly (fixed 250k 8N2, DE held HIGH): no serial_desc, so the
+        // sniffer/cache overlay and the serial-level tx_disabled path do not apply.
+        static const char * const tx_disabled_keys[BRIDGES_COUNT] = {
+            KEY_485_TX_DISABLED_1, KEY_485_TX_DISABLED_2
+        };
+        serial_config_t pins = {0};
+        dmx_frame_config_t dmx_cfg = {0};
+        ESP_RETURN_ON_ERROR(bridge_read_serial_config(index, &pins),
+                            TAG, "Port[%u]: Failed to read serial config", index + 1);
+        ESP_RETURN_ON_ERROR(read_dmx_config(index, &dmx_cfg),
+                            TAG, "Port[%u]: Failed to read DMX config", index + 1);
+        ESP_RETURN_ON_ERROR(dmx_output_init_port(index, &pins, &dmx_cfg,
+                                                 setting_items_read_bool(tx_disabled_keys[index])),
+                            TAG, "Port[%u]: dmx_output_init_port failed", index + 1);
+        pm_ctx[index].dmx_cfg_at_init = dmx_cfg;
         break;
     }
 
@@ -519,6 +565,11 @@ static void port_deinit_mode(unsigned index)
         memset(&pm_ctx[index].serial_cfg_at_init, 0, sizeof(pm_ctx[index].serial_cfg_at_init));
         rs485_busy_monitor_reset(index);
         rs485_stats_reset(index);
+        break;
+
+    case PM_MODE_DMX:
+        dmx_output_deinit_port(index);
+        memset(&pm_ctx[index].dmx_cfg_at_init, 0, sizeof(pm_ctx[index].dmx_cfg_at_init));
         break;
 
     default:
@@ -625,6 +676,7 @@ esp_err_t port_manager_init_subsystems(void)
     // Create the repeater-global mutex before any port can enter repeater mode,
     // so the cross-port data path is protected from the first init onward.
     repeater_init();
+    dmx_output_init();
 
     // The two below are independent of each other, so one running out of memory must not
     // cost the device the other: try both, report the first error. Losing the sniffer must
@@ -847,6 +899,11 @@ esp_err_t port_manager_set_tx_disabled(unsigned port_index, bool disabled)
     // apply_settings()/set_mode() from freeing/recreating serial_desc concurrently
     // (use-after-free). Mirrors port_manager_set_cache()'s lock discipline.
     pm_lock(port_index);
+    if (pm_ctx[port_index].mode == PM_MODE_DMX) {
+        esp_err_t dmx_ret = dmx_output_set_tx_disabled(port_index, disabled);
+        pm_unlock(port_index);
+        return dmx_ret;
+    }
     serial_desc_t *sd = get_port_serial_desc(port_index);
     if (sd == NULL) {
         // Port not running — setting will be applied on next port_init_mode()
@@ -1353,6 +1410,16 @@ static bool port_settings_changed_locked(unsigned port_index)
             return true;
         }
         return memcmp(&pm_ctx[port_index].serial_cfg_at_init, &nvs_cfg, sizeof(serial_config_t)) != 0;
+    }
+
+    if (current_mode == PM_MODE_DMX) {
+        dmx_frame_config_t nvs_cfg = {0};
+        if (read_dmx_config(port_index, &nvs_cfg) != ESP_OK) {
+            return true;
+        }
+        const dmx_frame_config_t *cur = &pm_ctx[port_index].dmx_cfg_at_init;
+        return (cur->slots != nvs_cfg.slots) || (cur->refresh_hz != nvs_cfg.refresh_hz) ||
+               (cur->break_us != nvs_cfg.break_us) || (cur->mab_us != nvs_cfg.mab_us);
     }
 
     // PM_MODE_DISABLED — nothing to check.

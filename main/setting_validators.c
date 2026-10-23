@@ -1,5 +1,6 @@
 #include "setting_validators.h"
 #include "setting_items.h"
+#include "bridge/dmx_frame.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -128,6 +129,36 @@ bool validate_timeout(const char *value)
     } else {
         return false;
     }
+}
+
+static bool validate_int_in_range(const char *value, long min, long max)
+{
+    if ((value == NULL) || (*value == '\0')) {
+        return false;
+    }
+    char *endptr;
+    long v = strtol(value, &endptr, 10);
+    return ((*endptr == '\0') && (v >= min) && (v <= max));
+}
+
+bool validate_dmx_slots(const char *value)
+{
+    return validate_int_in_range(value, DMX_FRAME_MIN_SLOTS, DMX_FRAME_MAX_SLOTS);
+}
+
+bool validate_dmx_refresh(const char *value)
+{
+    return validate_int_in_range(value, DMX_FRAME_REFRESH_MIN_HZ, DMX_FRAME_REFRESH_MAX_HZ);
+}
+
+bool validate_dmx_break(const char *value)
+{
+    return validate_int_in_range(value, DMX_FRAME_BREAK_MIN_US, DMX_FRAME_BREAK_MAX_US);
+}
+
+bool validate_dmx_mab(const char *value)
+{
+    return validate_int_in_range(value, DMX_FRAME_MAB_MIN_US, DMX_FRAME_MAB_MAX_US);
 }
 
 bool validate_baudrate(const char *value)
@@ -313,6 +344,9 @@ bool validate_port_mode(const char *value)
         return true;
     }
     if (strncmp(value, PORT_MODE_REPEATER_STR, SETTING_ITEM_MAX_STR_LEN) == 0) {
+        return true;
+    }
+    if (strncmp(value, PORT_MODE_DMX_STR, SETTING_ITEM_MAX_STR_LEN) == 0) {
         return true;
     }
     return false;

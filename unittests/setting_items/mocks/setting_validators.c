@@ -146,6 +146,30 @@ bool validate_port_mode(const char *value)
     return true;
 }
 
+bool validate_dmx_slots(const char *value)
+{
+    (void)value;
+    return true;
+}
+
+bool validate_dmx_refresh(const char *value)
+{
+    (void)value;
+    return true;
+}
+
+bool validate_dmx_break(const char *value)
+{
+    (void)value;
+    return true;
+}
+
+bool validate_dmx_mab(const char *value)
+{
+    (void)value;
+    return true;
+}
+
 bool validate_update_channel(const char *value)
 {
     (void)value;

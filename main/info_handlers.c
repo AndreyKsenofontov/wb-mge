@@ -5,6 +5,7 @@
 #include "bridge.h"
 #include "bridge/port_manager.h"
 #include "bridge/repeater.h"
+#include "bridge/dmx_output.h"
 #include "bridge/cache_modbus_server.h"
 #include "wifi_apsta.h"
 #include "config.h"
@@ -350,6 +351,28 @@ esp_err_t info_get_handler(httpd_req_t *req)
         cJSON_AddNumberToObject(repeater_json, "dropped_1", (double)rep.dropped_1);
         cJSON_AddNumberToObject(repeater_json, "dropped_2", (double)rep.dropped_2);
         cJSON_AddItemToObject(response_json, "repeater", repeater_json);
+    }
+
+    // DMX output statistics (top-level "dmx" object with one entry per port).
+    cJSON *dmx_json = cJSON_CreateObject();
+    if (dmx_json) {
+        static const char * const dmx_port_names[BRIDGES_COUNT] = {"rs485_1", "rs485_2"};
+        for (unsigned i = 0; i < BRIDGES_COUNT; i++) {
+            dmx_output_stats_t dmx = {0};
+            dmx_output_get_stats(i, &dmx);
+            cJSON *port_json = cJSON_CreateObject();
+            if (port_json == NULL) {
+                continue;
+            }
+            cJSON_AddBoolToObject(port_json, "active", dmx.active);
+            cJSON_AddBoolToObject(port_json, "tx_disabled", dmx.tx_disabled);
+            cJSON_AddNumberToObject(port_json, "slots", dmx.slots);
+            cJSON_AddNumberToObject(port_json, "period_us", (double)dmx.period_us);
+            cJSON_AddNumberToObject(port_json, "frames_sent", (double)dmx.frames_sent);
+            cJSON_AddNumberToObject(port_json, "uptime_ms", (double)dmx.uptime_ms);
+            cJSON_AddItemToObject(dmx_json, dmx_port_names[i], port_json);
+        }
+        cJSON_AddItemToObject(response_json, "dmx", dmx_json);
     }
 
     // Report the configured port from NVS, not the runtime state.

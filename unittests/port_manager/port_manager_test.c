@@ -5,6 +5,7 @@
 #include "setting_items.h"
 #include "bridge_mock.h"
 #include "repeater_mock.h"
+#include "dmx_output_mock.h"
 #include "esp_http_server.h"      /* httpd_req_t, for the REST handler tests */
 #include "freertos/semphr.h"      /* mock_xSemaphoreTake_hook, for the pm_lock race tests */
 
@@ -46,6 +47,7 @@ void mock_cache_multimaster_reset(void);
 
 /* setting_items.c mock helper */
 void mock_setting_items_set_port_mode(unsigned index, const char *value);
+extern int mock_dmx_slots[];      /* per-port dmx_slots_N NVS store (mocks/setting_items.c) */
 const char *mock_setting_items_get_port_mode(unsigned index);
 
 /* cache_modbus_server.c mock */
@@ -116,6 +118,7 @@ void setUp(void)
     mock_rs485_stats_reset_all();
     mock_json_utils_reset();
     mock_repeater_reset();
+    mock_dmx_output_reset();
     g_mock_port_mode_collision_ret = ESP_OK;   // no collision unless a test opts in
 }
 
@@ -345,6 +348,81 @@ void test_set_mode_passive_success(void)
      * sniffer inter-frame timeout exactly once (transport-owned, not overlay). */
     TEST_ASSERT_EQUAL(1, mock_serial_set_rx_timeout_called[0]);
     TEST_ASSERT_EQUAL(SERIAL_RX_TOUT_SNIFFER, mock_serial_set_rx_timeout_value[0]);
+}
+
+void test_mode_to_str_dmx(void)
+{
+    TEST_ASSERT_EQUAL_STRING(PORT_MODE_DMX_STR, port_manager_mode_to_str(PM_MODE_DMX));
+}
+
+void test_set_mode_dmx_success(void)
+{
+    esp_err_t ret = port_manager_set_mode(0, PM_MODE_DMX);
+    TEST_ASSERT_EQUAL(ESP_OK, ret);
+    TEST_ASSERT_EQUAL(PM_MODE_DMX, port_manager_get_mode(0));
+    TEST_ASSERT_EQUAL(1, mock_dmx_output_calls[0].init_called);
+    /* The NVS DMX parameters reach dmx_output_init_port() as read. */
+    TEST_ASSERT_EQUAL_UINT16(512, mock_dmx_output_calls[0].last_cfg.slots);
+    TEST_ASSERT_EQUAL_UINT16(40, mock_dmx_output_calls[0].last_cfg.refresh_hz);
+    TEST_ASSERT_EQUAL_UINT16(176, mock_dmx_output_calls[0].last_cfg.break_us);
+    TEST_ASSERT_EQUAL_UINT16(16, mock_dmx_output_calls[0].last_cfg.mab_us);
+    /* DMX owns the UART directly: no serial_desc, so no sniffer overlay is attached. */
+    TEST_ASSERT_EQUAL(0, mock_sniffer_attach_called[0]);
+    TEST_ASSERT_EQUAL(0, mock_serial_set_rx_timeout_called[0]);
+    TEST_ASSERT_EQUAL_STRING(PORT_MODE_DMX_STR, mock_setting_items_get_port_mode(0));
+}
+
+void test_set_mode_dmx_rejects_invalid_nvs_config(void)
+{
+    mock_dmx_slots[0] = 0;   /* below DMX_FRAME_MIN_SLOTS */
+    esp_err_t ret = port_manager_set_mode(0, PM_MODE_DMX);
+    TEST_ASSERT_NOT_EQUAL(ESP_OK, ret);
+    TEST_ASSERT_EQUAL(PM_MODE_DISABLED, port_manager_get_mode(0));
+    TEST_ASSERT_EQUAL(0, mock_dmx_output_calls[0].init_called);
+}
+
+void test_set_mode_dmx_init_failure_rolls_back(void)
+{
+    mock_dmx_output_init_should_fail = true;
+    esp_err_t ret = port_manager_set_mode(0, PM_MODE_DMX);
+    TEST_ASSERT_NOT_EQUAL(ESP_OK, ret);
+    TEST_ASSERT_EQUAL(PM_MODE_DISABLED, port_manager_get_mode(0));
+}
+
+void test_switch_dmx_to_disabled_deinits_output(void)
+{
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DISABLED));
+    TEST_ASSERT_EQUAL(PM_MODE_DISABLED, port_manager_get_mode(0));
+    TEST_ASSERT_EQUAL(1, mock_dmx_output_calls[0].deinit_called);
+    TEST_ASSERT_EQUAL(0, mock_sniffer_detach_called[0]);
+}
+
+void test_init_brings_up_dmx_from_nvs(void)
+{
+    mock_setting_items_set_port_mode(1, PORT_MODE_DMX_STR);
+    port_manager_init();
+    TEST_ASSERT_EQUAL(PM_MODE_DMX, port_manager_get_mode(1));
+    TEST_ASSERT_EQUAL(1, mock_dmx_output_calls[1].init_called);
+    TEST_ASSERT_EQUAL(0, mock_dmx_output_calls[0].init_called);
+}
+
+void test_dmx_settings_changed_tracks_dmx_parameters(void)
+{
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_FALSE_MESSAGE(port_manager_check_settings_changed(0),
+                              "unchanged DMX parameters must not report a change");
+    mock_dmx_slots[0] = 128;
+    TEST_ASSERT_TRUE_MESSAGE(port_manager_check_settings_changed(0),
+                             "a changed dmx_slots must report a change");
+}
+
+void test_set_tx_disabled_in_dmx_mode_goes_to_dmx_output(void)
+{
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_tx_disabled(0, true));
+    TEST_ASSERT_EQUAL(1, mock_dmx_output_calls[0].set_tx_disabled_called);
+    TEST_ASSERT_TRUE(mock_dmx_output_calls[0].last_tx_disabled);
 }
 
 void test_set_mode_repeater_success(void)
@@ -3315,6 +3393,14 @@ int port_manager_test(void)
     RUN_TEST(test_set_mode_tcp_bridge_success);
     RUN_TEST(test_set_mode_passive_success);
     RUN_TEST(test_set_mode_repeater_success);
+    RUN_TEST(test_mode_to_str_dmx);
+    RUN_TEST(test_set_mode_dmx_success);
+    RUN_TEST(test_set_mode_dmx_rejects_invalid_nvs_config);
+    RUN_TEST(test_set_mode_dmx_init_failure_rolls_back);
+    RUN_TEST(test_switch_dmx_to_disabled_deinits_output);
+    RUN_TEST(test_init_brings_up_dmx_from_nvs);
+    RUN_TEST(test_dmx_settings_changed_tracks_dmx_parameters);
+    RUN_TEST(test_set_tx_disabled_in_dmx_mode_goes_to_dmx_output);
 
     RUN_TEST(test_set_mode_transient_invalid_index);
     RUN_TEST(test_set_mode_transient_applies_live_but_does_not_persist);

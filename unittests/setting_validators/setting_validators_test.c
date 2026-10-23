@@ -337,6 +337,37 @@ void test_validate_bridge_mode(void)
     TEST_ASSERT_FALSE_MESSAGE(validate_bridge_mode("SERVER"), "Uppercase bridge mode should be invalid");
 }
 
+// Test the DMX parameter validators: integer range checks against the E1.11 limits
+void test_validate_dmx_parameters(void)
+{
+    LOG_MESSAGE();
+    LOG_COLORED_MESSAGE(CONS_COLOR_LIGHT_BLUE, "Test validate_dmx_* functions");
+    LOG_MESSAGE();
+
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_slots("24"), "24 slots should be valid (minimum)");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_slots("512"), "512 slots should be valid (maximum)");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_slots("23"), "23 slots should be invalid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_slots("513"), "513 slots should be invalid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_slots("512x"), "Trailing garbage should be invalid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_slots(""), "Empty slots should be invalid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_slots(NULL), "NULL slots should be invalid");
+
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_refresh("1"), "1 Hz should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_refresh("44"), "44 Hz should be valid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_refresh("0"), "0 Hz should be invalid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_refresh("45"), "45 Hz should be invalid");
+
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_break("92"), "92 us break should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_break("1000"), "1000 us break should be valid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_break("88"), "88 us break is below the transmitter minimum");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_break("1001"), "1001 us break should be invalid");
+
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_mab("12"), "12 us MAB should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_dmx_mab("1000"), "1000 us MAB should be valid");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_mab("8"), "8 us MAB is below the transmitter minimum");
+    TEST_ASSERT_FALSE_MESSAGE(validate_dmx_mab("-12"), "Negative MAB should be invalid");
+}
+
 // Test validate_port_mode function
 void test_validate_port_mode(void)
 {
@@ -349,6 +380,7 @@ void test_validate_port_mode(void)
     TEST_ASSERT_TRUE_MESSAGE(validate_port_mode("tcp_bridge"), "Port mode 'tcp_bridge' should be valid");
     TEST_ASSERT_TRUE_MESSAGE(validate_port_mode("passive"), "Port mode 'passive' should be valid");
     TEST_ASSERT_TRUE_MESSAGE(validate_port_mode("repeater"), "Port mode 'repeater' should be valid");
+    TEST_ASSERT_TRUE_MESSAGE(validate_port_mode("dmx"), "Port mode 'dmx' should be valid");
 
     // Invalid port modes
     TEST_ASSERT_FALSE_MESSAGE(validate_port_mode(NULL), "NULL port mode should be invalid");
@@ -625,6 +657,7 @@ int main(void)
     RUN_TEST(test_validate_wifi_auth);
     RUN_TEST(test_validate_bridge_mode);
     RUN_TEST(test_validate_port_mode);
+    RUN_TEST(test_validate_dmx_parameters);
     RUN_TEST(test_validate_update_channel);
     RUN_TEST(test_validate_bool);
     RUN_TEST(test_validate_login);

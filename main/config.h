@@ -54,6 +54,12 @@
 
 #define DEFAULT_UPDATE_CHANNEL              UPDATE_CHANNEL_STABLE_STR
 
+// DMX output defaults; must lie within the DMX_FRAME_* limits in bridge/dmx_frame.h
+#define DEFAULT_DMX_SLOTS                   "512"
+#define DEFAULT_DMX_REFRESH                 "40"
+#define DEFAULT_DMX_BREAK                   "176"
+#define DEFAULT_DMX_MAB                     "16"
+
 
 #ifdef MODEL_mge_v3
     #define DEVICE_MODEL            "WB-MGE v.3"

@@ -321,6 +321,14 @@ paths:
                     $ref: '#/components/schemas/RS485Status'
                   rs485_2:
                     $ref: '#/components/schemas/RS485Status'
+                  dmx:
+                    type: object
+                    description: "DMX512 output statistics, one entry per port (see GET /ports/{port_number}/dmx)"
+                    properties:
+                      rs485_1:
+                        $ref: '#/components/schemas/DmxStatus'
+                      rs485_2:
+                        $ref: '#/components/schemas/DmxStatus'
                   repeater:
                     type: object
                     description: "Serial<->serial repeater statistics (Port 1 <-> Port 2 raw byte forwarding)"
@@ -1148,7 +1156,7 @@ paths:
               properties:
                 mode:
                   type: string
-                  enum: ["disabled", "tcp_bridge", "passive", "repeater"]
+                  enum: ["disabled", "tcp_bridge", "passive", "repeater", "dmx"]
               required: [mode]
             example:
               mode: "repeater"
@@ -1162,7 +1170,7 @@ paths:
                 properties:
                   mode:
                     type: string
-                    enum: ["disabled", "tcp_bridge", "passive", "repeater"]
+                    enum: ["disabled", "tcp_bridge", "passive", "repeater", "dmx"]
               example:
                 mode: "repeater"
         '400':
@@ -1375,6 +1383,101 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /ports/{port_number}/dmx:
+    get:
+      summary: DMX512 output state and the current universe
+      description: >
+        Available in every port mode; `active` is false unless the port runs in `dmx` mode.
+        `values` is the universe the output transmits (channel 1 first); it keeps its
+        contents across port restarts and mode changes.
+      parameters:
+        - name: port_number
+          in: path
+          required: true
+          description: "Port number (1 or 2)"
+          schema:
+            type: integer
+            enum: [1, 2]
+      responses:
+        '200':
+          description: DMX output state
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/DmxStatus'
+                  - type: object
+                    properties:
+                      values:
+                        type: array
+                        minItems: 512
+                        maxItems: 512
+                        items:
+                          type: integer
+                          minimum: 0
+                          maximum: 255
+                        description: "Current universe, channel 1 first"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      summary: Write DMX channels or black out the universe
+      description: >
+        Writes channel values into the universe; they take effect from the next packet.
+        `blackout` (applied first) sets every channel to 0; `values` are written starting at
+        the 1-based channel `start` (default 1), and `start - 1 + len(values)` must not
+        exceed 512. The write is accepted in every port mode — the values are kept for when
+        the port enters `dmx` mode — and the response reports whether the output is active.
+      parameters:
+        - name: port_number
+          in: path
+          required: true
+          description: "Port number (1 or 2)"
+          schema:
+            type: integer
+            enum: [1, 2]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start:
+                  type: integer
+                  minimum: 1
+                  maximum: 512
+                  default: 1
+                  description: "First channel to write (1-based)"
+                values:
+                  type: array
+                  minItems: 1
+                  maxItems: 512
+                  items:
+                    type: integer
+                    minimum: 0
+                    maximum: 255
+                blackout:
+                  type: boolean
+                  description: "True sets every channel to 0 before `values` are applied"
+            example:
+              start: 1
+              values: [255, 0, 128]
+      responses:
+        '200':
+          description: Channels written
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DmxStatus'
+        '400':
+          description: Bad request — malformed JSON, neither `values` nor `blackout` given, a value outside 0..255, or a range past channel 512; nothing was applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
   /gcov:
     get:
       summary: Stream on-target code-coverage data (coverage builds only)
@@ -1427,11 +1530,40 @@ components:
           maximum: 10
         port_mode:
           type: string
-          enum: ["disabled", "tcp_bridge", "passive", "repeater"]
+          enum: ["disabled", "tcp_bridge", "passive", "repeater", "dmx"]
           description: "Current operating mode of the RS-485 port"
         cache_enabled:
           type: boolean
           description: "Whether the Modbus cache overlay is active on this port"
+
+    DmxStatus:
+      type: object
+      description: "State of the DMX512 transmitter on one port"
+      properties:
+        active:
+          type: boolean
+          description: "True while the port runs in dmx mode"
+        tx_disabled:
+          type: boolean
+          description: "True while DE is held low: packets are generated but not driven onto the bus"
+        slots:
+          type: integer
+          minimum: 0
+          maximum: 512
+          description: "Data slots per packet (0 when inactive)"
+        period_us:
+          type: integer
+          minimum: 0
+          description: "Break-to-break period in use, microseconds (0 when inactive)"
+        frames_sent:
+          type: integer
+          format: int64
+          minimum: 0
+        uptime_ms:
+          type: integer
+          format: int64
+          minimum: 0
+          description: "Milliseconds since the output started (0 when inactive)"
 
     RS485Settings:
       type: object
@@ -1457,7 +1589,7 @@ components:
           enum: ["5", "6", "7", "8"]
         port_mode:
           type: string
-          enum: ["disabled", "tcp_bridge", "passive", "repeater"]
+          enum: ["disabled", "tcp_bridge", "passive", "repeater", "dmx"]
         cache_en:
           type: boolean
           description: >-
@@ -1472,6 +1604,30 @@ components:
 
             If the overlay cannot be moved on the running device the settings are still saved and
             the response carries a cache_apply_failed warning; see SettingsWarning.
+        dmx_slots:
+          type: integer
+          minimum: 24
+          maximum: 512
+          default: 512
+          description: "DMX data slots per packet; used when port_mode is dmx"
+        dmx_refresh:
+          type: integer
+          minimum: 1
+          maximum: 44
+          default: 40
+          description: "Requested packet rate, Hz; capped by the packet length (44 Hz for 512 slots)"
+        dmx_break:
+          type: integer
+          minimum: 92
+          maximum: 1000
+          default: 176
+          description: "BREAK length, microseconds"
+        dmx_mab:
+          type: integer
+          minimum: 12
+          maximum: 1000
+          default: 16
+          description: "Mark-after-break length, microseconds"
         bridge:
           type: object
           properties:

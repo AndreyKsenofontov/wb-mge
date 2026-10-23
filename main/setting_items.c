@@ -234,6 +234,16 @@ static const setting_item_t setting_items[] = {
     {KEY_PORT_MODE1, PORT_MODE_TCP_BRIDGE_STR, validate_port_mode, SETTING_ITEM_TYPE_STRING},
     {KEY_PORT_MODE2, PORT_MODE_TCP_BRIDGE_STR, validate_port_mode, SETTING_ITEM_TYPE_STRING},
 
+    // DMX output parameters (used only when port_mode_N == dmx)
+    {KEY_DMX_SLOTS_1,   DEFAULT_DMX_SLOTS,   validate_dmx_slots,   SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_REFRESH_1, DEFAULT_DMX_REFRESH, validate_dmx_refresh, SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_BREAK_1,   DEFAULT_DMX_BREAK,   validate_dmx_break,   SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_MAB_1,     DEFAULT_DMX_MAB,     validate_dmx_mab,     SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_SLOTS_2,   DEFAULT_DMX_SLOTS,   validate_dmx_slots,   SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_REFRESH_2, DEFAULT_DMX_REFRESH, validate_dmx_refresh, SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_BREAK_2,   DEFAULT_DMX_BREAK,   validate_dmx_break,   SETTING_ITEM_TYPE_INT},
+    {KEY_DMX_MAB_2,     DEFAULT_DMX_MAB,     validate_dmx_mab,     SETTING_ITEM_TYPE_INT},
+
     // Cache Modbus TCP server port and enable/disable flag
     {KEY_CACHE_MODBUS_PORT,           DEFAULT_CACHE_MODBUS_PORT,           validate_port, SETTING_ITEM_TYPE_INT},
     {KEY_CACHE_MODBUS_SERVER_ENABLED, DEFAULT_CACHE_MODBUS_SERVER_ENABLED, validate_bool, SETTING_ITEM_TYPE_BOOL},

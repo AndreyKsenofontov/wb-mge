@@ -9,6 +9,7 @@
 #include "bridge/sniffer.h"
 #include "bridge/cache_multimaster.h"
 #include "bridge/port_manager.h"
+#include "bridge/dmx_http.h"
 #include "coverage_dump.h"
 
 #include <esp_http_server.h>
@@ -364,6 +365,7 @@ esp_err_t http_server_init_port(uint16_t port)
         sniffer_register_handlers(http_server);
         cache_multimaster_register_handlers(http_server);
         port_manager_register_handlers(http_server);
+        dmx_http_register_handlers(http_server);
 #ifdef COVERAGE_BUILD
         coverage_dump_register_handlers(http_server);
 #endif

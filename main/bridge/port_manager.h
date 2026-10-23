@@ -26,12 +26,16 @@ typedef void *httpd_handle_t;
  * PM_MODE_REPEATER   — serial port is open and raw bytes are transparently
  *                      forwarded to the other RS-485 port (and vice-versa) to
  *                      extend the line / restore signal integrity.
+ * PM_MODE_DMX        — the UART is driven directly as a DMX512 transmitter
+ *                      (250k 8N2, BREAK/MAB, DE held HIGH); see dmx_output.h.
+ *                      No serial_desc, so the sniffer/cache overlays do not attach.
  */
 typedef enum {
     PM_MODE_DISABLED   = 0,
     PM_MODE_TCP_BRIDGE = 1,
     PM_MODE_PASSIVE    = 2,
     PM_MODE_REPEATER   = 3,
+    PM_MODE_DMX        = 4,
 } pm_mode_t;
 
 /**

@@ -101,6 +101,16 @@
 #define KEY_CACHE_EN_1              "cache_en_1"
 #define KEY_CACHE_EN_2              "cache_en_2"
 
+// Per-port DMX output parameters, used when port_mode_N == dmx (max 15 chars for ESP32 NVS)
+#define KEY_DMX_SLOTS_1             "dmx_slots_1"
+#define KEY_DMX_SLOTS_2             "dmx_slots_2"
+#define KEY_DMX_REFRESH_1           "dmx_refresh_1"
+#define KEY_DMX_REFRESH_2           "dmx_refresh_2"
+#define KEY_DMX_BREAK_1             "dmx_break_1"
+#define KEY_DMX_BREAK_2             "dmx_break_2"
+#define KEY_DMX_MAB_1               "dmx_mab_1"
+#define KEY_DMX_MAB_2               "dmx_mab_2"
+
 // Cache Modbus TCP server port NVS key (max 15 chars for ESP32 NVS)
 #define KEY_CACHE_MODBUS_PORT               "cache_mb_port"
 // Cache Modbus TCP server enable/disable NVS key (max 15 chars for ESP32 NVS)
@@ -116,6 +126,7 @@
 #define PORT_MODE_TCP_BRIDGE_STR    "tcp_bridge"
 #define PORT_MODE_PASSIVE_STR       "passive"
 #define PORT_MODE_REPEATER_STR      "repeater"
+#define PORT_MODE_DMX_STR           "dmx"
 
 // Firmware update channel string values. These names are used verbatim as lookup
 // keys in the wb-releases manifest, so they must not be renamed.
