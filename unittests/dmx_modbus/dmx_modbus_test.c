@@ -17,6 +17,7 @@ void mock_dmx_output_reset(void);
 extern int mock_tcp_server_init_called;
 extern int mock_tcp_server_deinit_called;
 extern int mock_tcp_server_last_port;
+extern uint32_t mock_tcp_server_max_connections;
 void mock_tcp_server_reset(void);
 
 /* mocks/mb_device.c */
@@ -329,6 +330,8 @@ void test_init_starts_listener_and_deinit_stops_it(void)
     TEST_ASSERT_EQUAL(502, mock_tcp_server_last_port);
     TEST_ASSERT_EQUAL(502, dmx_modbus_get_port(0));
     TEST_ASSERT_EQUAL(0, dmx_modbus_get_port(1));
+    /* The listener is capped: extra clients must be refused rather than starve the device. */
+    TEST_ASSERT_EQUAL_UINT32(4, mock_tcp_server_max_connections);
 
     /* Same port again: no second listener. */
     TEST_ASSERT_EQUAL(ESP_OK, dmx_modbus_init(0, 502));

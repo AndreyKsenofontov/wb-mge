@@ -44,6 +44,14 @@ esp_err_t tcp_server_init(int port, tcp_receive_handler_t handler, tcp_desc_t **
     return 0; /* ESP_OK */
 }
 
+uint32_t mock_tcp_server_max_connections = 0;
+
+void tcp_server_set_max_connections(tcp_desc_t *desc, uint32_t max_connections)
+{
+    (void)desc;
+    mock_tcp_server_max_connections = max_connections;
+}
+
 esp_err_t tcp_server_deinit(tcp_desc_t *desc)
 {
     (void)desc;
@@ -67,4 +75,5 @@ void mock_tcp_server_reset(void)
     mock_tcp_server_init_called   = 0;
     mock_tcp_server_deinit_called = 0;
     mock_tcp_server_last_port     = 0;
+    mock_tcp_server_max_connections = 0;
 }

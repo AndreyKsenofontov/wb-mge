@@ -22,6 +22,11 @@ static const char *TAG = "dmx_mb_srv";
 #define DMX_MB_WRITE_SINGLE_REQ_LEN     (sizeof(mb_tcp_header_t) + 4u)
 #define DMX_MB_WRITE_MULTI_MIN_REQ_LEN  (sizeof(mb_tcp_header_t) + 5u)
 #define DMX_MB_US_PER_S                 1000000u
+// Concurrent Modbus TCP clients per dmx port. Every connection costs a receiver task and an
+// lwIP socket out of CONFIG_LWIP_MAX_SOCKETS, which the HTTP server, the UDP receivers and the
+// other port's listener share: eight uncapped clients took heap_min_free down to ~15 KB. A
+// controller plus a tool or two is the realistic load; extra clients are refused at accept().
+#define DMX_MB_MAX_CONNECTIONS          4u
 
 typedef struct {
     tcp_desc_t    *tcp_desc;
@@ -302,6 +307,7 @@ esp_err_t dmx_modbus_init(unsigned port_index, int tcp_port)
     }
     ctx->port = tcp_port;
     ctx->tcp_desc->close_handler = on_conn_close;
+    tcp_server_set_max_connections(ctx->tcp_desc, DMX_MB_MAX_CONNECTIONS);
     return ESP_OK;
 }
 
