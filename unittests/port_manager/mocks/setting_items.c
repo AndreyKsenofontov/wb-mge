@@ -15,6 +15,9 @@ int mock_dmx_refresh[BRIDGES_COUNT] = {40, 40};
 int mock_dmx_break[BRIDGES_COUNT] = {176, 176};
 int mock_dmx_mab[BRIDGES_COUNT] = {16, 16};
 
+/* Stored mock values for the per-port TCP listener port (bridge_port_1 / bridge_port_2). */
+int mock_bridge_port[BRIDGES_COUNT] = {502, 503};
+
 /* Stored mock values for per-port cache overlay (cache_en_1 / cache_en_2) */
 bool mock_cache_en[BRIDGES_COUNT] = {false, false};
 
@@ -114,6 +117,7 @@ int setting_items_read_int(const char *key)
         return mock_cache_port;
     }
     static const struct { const char *key; int *store; } dmx_keys[] = {
+        {KEY_BRIDGE_PORT1, &mock_bridge_port[0]},   {KEY_BRIDGE_PORT2, &mock_bridge_port[1]},
         {KEY_DMX_SLOTS_1, &mock_dmx_slots[0]},     {KEY_DMX_SLOTS_2, &mock_dmx_slots[1]},
         {KEY_DMX_REFRESH_1, &mock_dmx_refresh[0]}, {KEY_DMX_REFRESH_2, &mock_dmx_refresh[1]},
         {KEY_DMX_BREAK_1, &mock_dmx_break[0]},     {KEY_DMX_BREAK_2, &mock_dmx_break[1]},
@@ -170,6 +174,8 @@ void mock_setting_items_reset(void)
         mock_dmx_break[i] = 176;
         mock_dmx_mab[i] = 16;
     }
+    mock_bridge_port[0] = 502;
+    mock_bridge_port[1] = 503;
     mock_setting_items_save_called = 0;
     mock_setting_items_save_bool_called = 0;
     mock_setting_items_save_should_fail = false;

@@ -412,9 +412,10 @@ static void attach_warnings(cJSON *response_json, cJSON *warnings)
 // Only ports that are actually bound LOCALLY take part in the check:
 //   web_port          — always (the config web server always listens);
 //   cache_modbus_port — only when the cache Modbus server is enabled;
-//   bridge_port_N     — only when port_mode_N == tcp_bridge AND bridge_mode_N == server; in client
+//   bridge_port_N     — when port_mode_N == tcp_bridge AND bridge_mode_N == server (in client
 //                       mode the port belongs to the REMOTE peer, so nothing is bound locally and
-//                       a "collision" with it is harmless.
+//                       a "collision" with it is harmless), or when port_mode_N == dmx (the DMX
+//                       Modbus TCP register server listens on it).
 // Every pair of them is compared, which is what the old check was missing: it only compared
 // cache_modbus_port against the two bridge ports, so bridge_port_1 == bridge_port_2, and anything
 // colliding with web_port (default 80), went straight through.
@@ -465,10 +466,12 @@ static bool validate_port_collisions(cJSON *request_json, cJSON *warnings)
         cJSON *rs485 = get_object_or_null(request_json, rs485_names[i]);
         cJSON *bridge = get_object_or_null(rs485, "bridge");
 
-        if (!effective_str_equals(rs485, "port_mode", port_mode_keys[i], PORT_MODE_TCP_BRIDGE_STR)) {
-            continue;   // port is disabled / passive / repeater — no TCP gateway
+        // A dmx port binds bridge_port_N too: its Modbus TCP register server listens there.
+        bool is_dmx = effective_str_equals(rs485, "port_mode", port_mode_keys[i], PORT_MODE_DMX_STR);
+        if (!is_dmx && !effective_str_equals(rs485, "port_mode", port_mode_keys[i], PORT_MODE_TCP_BRIDGE_STR)) {
+            continue;   // port is disabled / passive / repeater — no TCP listener
         }
-        if (!effective_str_equals(bridge, "mode", bridge_mode_keys[i], BRIDGE_MODE_SERVER_STR)) {
+        if (!is_dmx && !effective_str_equals(bridge, "mode", bridge_mode_keys[i], BRIDGE_MODE_SERVER_STR)) {
             continue;   // client mode — the port is remote, nothing is bound locally
         }
 

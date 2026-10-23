@@ -6,6 +6,7 @@
 #include "bridge_mock.h"
 #include "repeater_mock.h"
 #include "dmx_output_mock.h"
+#include "dmx_modbus_mock.h"
 #include "esp_http_server.h"      /* httpd_req_t, for the REST handler tests */
 #include "freertos/semphr.h"      /* mock_xSemaphoreTake_hook, for the pm_lock race tests */
 
@@ -48,6 +49,7 @@ void mock_cache_multimaster_reset(void);
 /* setting_items.c mock helper */
 void mock_setting_items_set_port_mode(unsigned index, const char *value);
 extern int mock_dmx_slots[];      /* per-port dmx_slots_N NVS store (mocks/setting_items.c) */
+extern int mock_bridge_port[];    /* per-port bridge_port_N NVS store (mocks/setting_items.c) */
 const char *mock_setting_items_get_port_mode(unsigned index);
 
 /* cache_modbus_server.c mock */
@@ -119,6 +121,7 @@ void setUp(void)
     mock_json_utils_reset();
     mock_repeater_reset();
     mock_dmx_output_reset();
+    mock_dmx_modbus_reset();
     g_mock_port_mode_collision_ret = ESP_OK;   // no collision unless a test opts in
 }
 
@@ -423,6 +426,41 @@ void test_set_tx_disabled_in_dmx_mode_goes_to_dmx_output(void)
     TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_tx_disabled(0, true));
     TEST_ASSERT_EQUAL(1, mock_dmx_output_calls[0].set_tx_disabled_called);
     TEST_ASSERT_TRUE(mock_dmx_output_calls[0].last_tx_disabled);
+}
+
+void test_set_mode_dmx_starts_modbus_listener_on_bridge_port(void)
+{
+    mock_bridge_port[0] = 1502;
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(1, mock_dmx_modbus_calls[0].init_called);
+    TEST_ASSERT_EQUAL(1502, mock_dmx_modbus_calls[0].last_port);
+    TEST_ASSERT_EQUAL(0, mock_dmx_modbus_calls[1].init_called);
+}
+
+void test_set_mode_dmx_modbus_failure_rolls_back_output(void)
+{
+    mock_dmx_modbus_init_should_fail = true;
+    TEST_ASSERT_NOT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(PM_MODE_DISABLED, port_manager_get_mode(0));
+    /* The output was started and must have been stopped again. */
+    TEST_ASSERT_EQUAL(1, mock_dmx_output_calls[0].init_called);
+    TEST_ASSERT_EQUAL(1, mock_dmx_output_calls[0].deinit_called);
+}
+
+void test_switch_dmx_to_disabled_stops_modbus_listener(void)
+{
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DISABLED));
+    TEST_ASSERT_EQUAL(1, mock_dmx_modbus_calls[0].deinit_called);
+}
+
+void test_dmx_settings_changed_tracks_bridge_port(void)
+{
+    TEST_ASSERT_EQUAL(ESP_OK, port_manager_set_mode(0, PM_MODE_DMX));
+    TEST_ASSERT_FALSE(port_manager_check_settings_changed(0));
+    mock_bridge_port[0] = 1502;
+    TEST_ASSERT_TRUE_MESSAGE(port_manager_check_settings_changed(0),
+                             "a changed bridge_port must restart a dmx port's Modbus listener");
 }
 
 void test_set_mode_repeater_success(void)
@@ -3401,6 +3439,10 @@ int port_manager_test(void)
     RUN_TEST(test_init_brings_up_dmx_from_nvs);
     RUN_TEST(test_dmx_settings_changed_tracks_dmx_parameters);
     RUN_TEST(test_set_tx_disabled_in_dmx_mode_goes_to_dmx_output);
+    RUN_TEST(test_set_mode_dmx_starts_modbus_listener_on_bridge_port);
+    RUN_TEST(test_set_mode_dmx_modbus_failure_rolls_back_output);
+    RUN_TEST(test_switch_dmx_to_disabled_stops_modbus_listener);
+    RUN_TEST(test_dmx_settings_changed_tracks_bridge_port);
 
     RUN_TEST(test_set_mode_transient_invalid_index);
     RUN_TEST(test_set_mode_transient_applies_live_but_does_not_persist);

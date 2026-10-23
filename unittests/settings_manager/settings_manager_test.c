@@ -746,6 +746,30 @@ void test_cache_port_equal_bridge_port_of_non_tcp_bridge_port_accepted(void)
     cJSON_Delete(resp);
 }
 
+// A port in dmx mode binds its bridge port for the DMX Modbus TCP register server, so
+// moving the cache server onto that port is a collision.
+void test_cache_port_equal_bridge_port_of_dmx_port_rejected(void)
+{
+    LOG_MESSAGE();
+    LOG_COLORED_MESSAGE(CONS_COLOR_LIGHT_BLUE,
+        "cache_modbus_port == bridge_port_1 and port 1 is in dmx mode -> success:false");
+    LOG_MESSAGE();
+
+    setting_items_save(KEY_PORT_MODE1, PORT_MODE_DMX_STR);
+    cJSON *req = make_request_int("cache_modbus_port", 502);  // == bridge_port_1, DMX Modbus server listens there
+    cJSON *resp = NULL;
+
+    esp_err_t ret = settings_process_request_json(req, &resp);
+
+    TEST_ASSERT_EQUAL_MESSAGE(ESP_OK, ret, "settings_process_request_json must return ESP_OK");
+    TEST_ASSERT_NOT_NULL_MESSAGE(resp, "Response JSON must be allocated");
+    TEST_ASSERT_FALSE_MESSAGE(response_success(resp),
+        "the bridge port of a dmx port is a local listener and must collide");
+
+    cJSON_Delete(req);
+    cJSON_Delete(resp);
+}
+
 // The web server port is always bound: a bridge gateway must not be moved onto it.
 void test_bridge_port_equal_web_port_rejected(void)
 {
@@ -1360,6 +1384,7 @@ int main(void)
     RUN_TEST(test_bridge_port_equal_web_port_rejected);
     RUN_TEST(test_web_port_equal_cache_port_rejected);
     RUN_TEST(test_inherited_collision_does_not_block_unrelated_request);
+    RUN_TEST(test_cache_port_equal_bridge_port_of_dmx_port_rejected);
     RUN_TEST(test_inherited_collision_reported_in_response_warnings);
     RUN_TEST(test_failed_cache_apply_reported_in_response_warnings);
     RUN_TEST(test_successful_cache_apply_reports_no_warning);

@@ -1139,6 +1139,13 @@ paths:
   /ports/{port_number}/mode:
     post:
       summary: Set port operating mode
+      description: >
+        Modes: `disabled`, `tcp_bridge` (Modbus TCP / transparent gateway), `passive`,
+        `repeater`, and `dmx` — the port transmits DMX512 (see GET /ports/{port_number}/dmx)
+        and serves a Modbus TCP register map of the universe on the port's bridge port
+        (rs485_N.bridge.port): holding registers 0..511 are channels 1..512 (FC03/04 read,
+        FC06/16 write, values 0..255), 1000 is a blackout trigger (write 1), 1001..1006 are
+        read-only status (active, slots, refresh Hz, frames_sent lo/hi, tx_disabled).
       parameters:
         - name: port_number
           in: path

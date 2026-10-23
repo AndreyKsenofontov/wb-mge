@@ -2,6 +2,7 @@
 #include "bridge.h"
 #include "repeater.h"
 #include "dmx_output.h"
+#include "dmx_modbus.h"
 #include "sniffer.h"
 #include "cache_multimaster.h"
 #include "cache_modbus_server.h"
@@ -350,6 +351,13 @@ static pm_mode_t read_port_mode_from_nvs(unsigned index)
     return str_to_pm_mode(value);
 }
 
+// Return the NVS key of the per-port TCP listener port (bridge_port_1 / bridge_port_2).
+static const char *bridge_port_nvs_key(unsigned index)
+{
+    static const char *keys[BRIDGES_COUNT] = {KEY_BRIDGE_PORT1, KEY_BRIDGE_PORT2};
+    return (index < BRIDGES_COUNT) ? keys[index] : KEY_BRIDGE_PORT1;
+}
+
 // Read the DMX output parameters of a port from NVS.
 static esp_err_t read_dmx_config(unsigned index, dmx_frame_config_t *cfg)
 {
@@ -463,6 +471,14 @@ static esp_err_t port_init_mode(unsigned index, pm_mode_t mode)
         ESP_RETURN_ON_ERROR(dmx_output_init_port(index, &pins, &dmx_cfg,
                                                  setting_items_read_bool(tx_disabled_keys[index])),
                             TAG, "Port[%u]: dmx_output_init_port failed", index + 1);
+        // The port's Modbus TCP listener maps the universe onto registers; it uses the
+        // same bridge_port_N the TCP gateway would, since the two modes never coexist.
+        esp_err_t mb_ret = dmx_modbus_init(index, setting_items_read_int(bridge_port_nvs_key(index)));
+        if (mb_ret != ESP_OK) {
+            ESP_LOGE(TAG, "Port[%u]: dmx_modbus_init failed: %s", index + 1, esp_err_to_name(mb_ret));
+            dmx_output_deinit_port(index);
+            return mb_ret;
+        }
         pm_ctx[index].dmx_cfg_at_init = dmx_cfg;
         break;
     }
@@ -568,6 +584,9 @@ static void port_deinit_mode(unsigned index)
         break;
 
     case PM_MODE_DMX:
+        // Stop the listener first: its receiver tasks write into the universe that
+        // dmx_output_deinit_port() stops transmitting.
+        dmx_modbus_deinit(index);
         dmx_output_deinit_port(index);
         memset(&pm_ctx[index].dmx_cfg_at_init, 0, sizeof(pm_ctx[index].dmx_cfg_at_init));
         break;
@@ -1419,7 +1438,8 @@ static bool port_settings_changed_locked(unsigned port_index)
         }
         const dmx_frame_config_t *cur = &pm_ctx[port_index].dmx_cfg_at_init;
         return (cur->slots != nvs_cfg.slots) || (cur->refresh_hz != nvs_cfg.refresh_hz) ||
-               (cur->break_us != nvs_cfg.break_us) || (cur->mab_us != nvs_cfg.mab_us);
+               (cur->break_us != nvs_cfg.break_us) || (cur->mab_us != nvs_cfg.mab_us) ||
+               (dmx_modbus_get_port(port_index) != setting_items_read_int(bridge_port_nvs_key(port_index)));
     }
 
     // PM_MODE_DISABLED — nothing to check.

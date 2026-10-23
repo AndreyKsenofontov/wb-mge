@@ -15,6 +15,7 @@ AUX_SRC += $(PROJ_DIR)/main/bridge/dmx_frame.c
 AUX_SRC += mocks/bridge.c
 AUX_SRC += mocks/repeater.c
 AUX_SRC += mocks/dmx_output.c
+AUX_SRC += mocks/dmx_modbus.c
 AUX_SRC += mocks/sniffer.c
 AUX_SRC += mocks/cache_multimaster.c
 AUX_SRC += mocks/cache_modbus_server.c
