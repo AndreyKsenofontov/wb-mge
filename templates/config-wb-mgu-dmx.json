@@ -1,0 +1,5179 @@
+{
+    "title": "wb_mgu_dmx_template_title",
+    "device_type": "wb-mgu-dmx",
+    "group": "g-wb",
+    "device": {
+        "name": "WB-MGU DMX",
+        "id": "wb_mgu_dmx",
+        "max_read_registers": 125,
+        "groups": [
+            {
+                "title": "g_general_title",
+                "id": "g_general"
+            },
+            {
+                "title": "g_dmx_title",
+                "id": "g_dmx"
+            }
+        ],
+        "channels": [
+            {
+                "name": "Blackout",
+                "reg_type": "holding",
+                "address": 1000,
+                "type": "pushbutton",
+                "on_value": 1,
+                "group": "g_general"
+            },
+            {
+                "name": "Active",
+                "reg_type": "holding",
+                "address": 1001,
+                "type": "switch",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "Slots",
+                "reg_type": "holding",
+                "address": 1002,
+                "type": "value",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "Refresh Rate",
+                "reg_type": "holding",
+                "address": 1003,
+                "type": "value",
+                "units": "Hz",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "Frames Sent",
+                "reg_type": "holding",
+                "address": 1004,
+                "format": "u32",
+                "word_order": "little_endian",
+                "type": "value",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "TX Disabled",
+                "reg_type": "holding",
+                "address": 1006,
+                "type": "switch",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "Channel 1",
+                "reg_type": "holding",
+                "address": 0,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 2",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 3",
+                "reg_type": "holding",
+                "address": 2,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 4",
+                "reg_type": "holding",
+                "address": 3,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 5",
+                "reg_type": "holding",
+                "address": 4,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 6",
+                "reg_type": "holding",
+                "address": 5,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 7",
+                "reg_type": "holding",
+                "address": 6,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 8",
+                "reg_type": "holding",
+                "address": 7,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 9",
+                "reg_type": "holding",
+                "address": 8,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 10",
+                "reg_type": "holding",
+                "address": 9,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 11",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 12",
+                "reg_type": "holding",
+                "address": 11,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 13",
+                "reg_type": "holding",
+                "address": 12,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 14",
+                "reg_type": "holding",
+                "address": 13,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 15",
+                "reg_type": "holding",
+                "address": 14,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 16",
+                "reg_type": "holding",
+                "address": 15,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 17",
+                "reg_type": "holding",
+                "address": 16,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 18",
+                "reg_type": "holding",
+                "address": 17,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 19",
+                "reg_type": "holding",
+                "address": 18,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 20",
+                "reg_type": "holding",
+                "address": 19,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 21",
+                "reg_type": "holding",
+                "address": 20,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 22",
+                "reg_type": "holding",
+                "address": 21,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 23",
+                "reg_type": "holding",
+                "address": 22,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 24",
+                "reg_type": "holding",
+                "address": 23,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 25",
+                "reg_type": "holding",
+                "address": 24,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 26",
+                "reg_type": "holding",
+                "address": 25,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 27",
+                "reg_type": "holding",
+                "address": 26,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 28",
+                "reg_type": "holding",
+                "address": 27,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 29",
+                "reg_type": "holding",
+                "address": 28,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 30",
+                "reg_type": "holding",
+                "address": 29,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 31",
+                "reg_type": "holding",
+                "address": 30,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 32",
+                "reg_type": "holding",
+                "address": 31,
+                "type": "range",
+                "max": 255,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 33",
+                "reg_type": "holding",
+                "address": 32,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 34",
+                "reg_type": "holding",
+                "address": 33,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 35",
+                "reg_type": "holding",
+                "address": 34,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 36",
+                "reg_type": "holding",
+                "address": 35,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 37",
+                "reg_type": "holding",
+                "address": 36,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 38",
+                "reg_type": "holding",
+                "address": 37,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 39",
+                "reg_type": "holding",
+                "address": 38,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 40",
+                "reg_type": "holding",
+                "address": 39,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 41",
+                "reg_type": "holding",
+                "address": 40,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 42",
+                "reg_type": "holding",
+                "address": 41,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 43",
+                "reg_type": "holding",
+                "address": 42,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 44",
+                "reg_type": "holding",
+                "address": 43,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 45",
+                "reg_type": "holding",
+                "address": 44,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 46",
+                "reg_type": "holding",
+                "address": 45,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 47",
+                "reg_type": "holding",
+                "address": 46,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 48",
+                "reg_type": "holding",
+                "address": 47,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 49",
+                "reg_type": "holding",
+                "address": 48,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 50",
+                "reg_type": "holding",
+                "address": 49,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 51",
+                "reg_type": "holding",
+                "address": 50,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 52",
+                "reg_type": "holding",
+                "address": 51,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 53",
+                "reg_type": "holding",
+                "address": 52,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 54",
+                "reg_type": "holding",
+                "address": 53,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 55",
+                "reg_type": "holding",
+                "address": 54,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 56",
+                "reg_type": "holding",
+                "address": 55,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 57",
+                "reg_type": "holding",
+                "address": 56,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 58",
+                "reg_type": "holding",
+                "address": 57,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 59",
+                "reg_type": "holding",
+                "address": 58,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 60",
+                "reg_type": "holding",
+                "address": 59,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 61",
+                "reg_type": "holding",
+                "address": 60,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 62",
+                "reg_type": "holding",
+                "address": 61,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 63",
+                "reg_type": "holding",
+                "address": 62,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 64",
+                "reg_type": "holding",
+                "address": 63,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 65",
+                "reg_type": "holding",
+                "address": 64,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 66",
+                "reg_type": "holding",
+                "address": 65,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 67",
+                "reg_type": "holding",
+                "address": 66,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 68",
+                "reg_type": "holding",
+                "address": 67,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 69",
+                "reg_type": "holding",
+                "address": 68,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 70",
+                "reg_type": "holding",
+                "address": 69,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 71",
+                "reg_type": "holding",
+                "address": 70,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 72",
+                "reg_type": "holding",
+                "address": 71,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 73",
+                "reg_type": "holding",
+                "address": 72,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 74",
+                "reg_type": "holding",
+                "address": 73,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 75",
+                "reg_type": "holding",
+                "address": 74,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 76",
+                "reg_type": "holding",
+                "address": 75,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 77",
+                "reg_type": "holding",
+                "address": 76,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 78",
+                "reg_type": "holding",
+                "address": 77,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 79",
+                "reg_type": "holding",
+                "address": 78,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 80",
+                "reg_type": "holding",
+                "address": 79,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 81",
+                "reg_type": "holding",
+                "address": 80,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 82",
+                "reg_type": "holding",
+                "address": 81,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 83",
+                "reg_type": "holding",
+                "address": 82,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 84",
+                "reg_type": "holding",
+                "address": 83,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 85",
+                "reg_type": "holding",
+                "address": 84,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 86",
+                "reg_type": "holding",
+                "address": 85,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 87",
+                "reg_type": "holding",
+                "address": 86,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 88",
+                "reg_type": "holding",
+                "address": 87,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 89",
+                "reg_type": "holding",
+                "address": 88,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 90",
+                "reg_type": "holding",
+                "address": 89,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 91",
+                "reg_type": "holding",
+                "address": 90,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 92",
+                "reg_type": "holding",
+                "address": 91,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 93",
+                "reg_type": "holding",
+                "address": 92,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 94",
+                "reg_type": "holding",
+                "address": 93,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 95",
+                "reg_type": "holding",
+                "address": 94,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 96",
+                "reg_type": "holding",
+                "address": 95,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 97",
+                "reg_type": "holding",
+                "address": 96,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 98",
+                "reg_type": "holding",
+                "address": 97,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 99",
+                "reg_type": "holding",
+                "address": 98,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 100",
+                "reg_type": "holding",
+                "address": 99,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 101",
+                "reg_type": "holding",
+                "address": 100,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 102",
+                "reg_type": "holding",
+                "address": 101,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 103",
+                "reg_type": "holding",
+                "address": 102,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 104",
+                "reg_type": "holding",
+                "address": 103,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 105",
+                "reg_type": "holding",
+                "address": 104,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 106",
+                "reg_type": "holding",
+                "address": 105,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 107",
+                "reg_type": "holding",
+                "address": 106,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 108",
+                "reg_type": "holding",
+                "address": 107,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 109",
+                "reg_type": "holding",
+                "address": 108,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 110",
+                "reg_type": "holding",
+                "address": 109,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 111",
+                "reg_type": "holding",
+                "address": 110,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 112",
+                "reg_type": "holding",
+                "address": 111,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 113",
+                "reg_type": "holding",
+                "address": 112,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 114",
+                "reg_type": "holding",
+                "address": 113,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 115",
+                "reg_type": "holding",
+                "address": 114,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 116",
+                "reg_type": "holding",
+                "address": 115,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 117",
+                "reg_type": "holding",
+                "address": 116,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 118",
+                "reg_type": "holding",
+                "address": 117,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 119",
+                "reg_type": "holding",
+                "address": 118,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 120",
+                "reg_type": "holding",
+                "address": 119,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 121",
+                "reg_type": "holding",
+                "address": 120,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 122",
+                "reg_type": "holding",
+                "address": 121,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 123",
+                "reg_type": "holding",
+                "address": 122,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 124",
+                "reg_type": "holding",
+                "address": 123,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 125",
+                "reg_type": "holding",
+                "address": 124,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 126",
+                "reg_type": "holding",
+                "address": 125,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 127",
+                "reg_type": "holding",
+                "address": 126,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 128",
+                "reg_type": "holding",
+                "address": 127,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 129",
+                "reg_type": "holding",
+                "address": 128,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 130",
+                "reg_type": "holding",
+                "address": 129,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 131",
+                "reg_type": "holding",
+                "address": 130,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 132",
+                "reg_type": "holding",
+                "address": 131,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 133",
+                "reg_type": "holding",
+                "address": 132,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 134",
+                "reg_type": "holding",
+                "address": 133,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 135",
+                "reg_type": "holding",
+                "address": 134,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 136",
+                "reg_type": "holding",
+                "address": 135,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 137",
+                "reg_type": "holding",
+                "address": 136,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 138",
+                "reg_type": "holding",
+                "address": 137,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 139",
+                "reg_type": "holding",
+                "address": 138,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 140",
+                "reg_type": "holding",
+                "address": 139,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 141",
+                "reg_type": "holding",
+                "address": 140,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 142",
+                "reg_type": "holding",
+                "address": 141,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 143",
+                "reg_type": "holding",
+                "address": 142,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 144",
+                "reg_type": "holding",
+                "address": 143,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 145",
+                "reg_type": "holding",
+                "address": 144,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 146",
+                "reg_type": "holding",
+                "address": 145,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 147",
+                "reg_type": "holding",
+                "address": 146,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 148",
+                "reg_type": "holding",
+                "address": 147,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 149",
+                "reg_type": "holding",
+                "address": 148,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 150",
+                "reg_type": "holding",
+                "address": 149,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 151",
+                "reg_type": "holding",
+                "address": 150,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 152",
+                "reg_type": "holding",
+                "address": 151,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 153",
+                "reg_type": "holding",
+                "address": 152,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 154",
+                "reg_type": "holding",
+                "address": 153,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 155",
+                "reg_type": "holding",
+                "address": 154,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 156",
+                "reg_type": "holding",
+                "address": 155,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 157",
+                "reg_type": "holding",
+                "address": 156,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 158",
+                "reg_type": "holding",
+                "address": 157,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 159",
+                "reg_type": "holding",
+                "address": 158,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 160",
+                "reg_type": "holding",
+                "address": 159,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 161",
+                "reg_type": "holding",
+                "address": 160,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 162",
+                "reg_type": "holding",
+                "address": 161,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 163",
+                "reg_type": "holding",
+                "address": 162,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 164",
+                "reg_type": "holding",
+                "address": 163,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 165",
+                "reg_type": "holding",
+                "address": 164,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 166",
+                "reg_type": "holding",
+                "address": 165,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 167",
+                "reg_type": "holding",
+                "address": 166,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 168",
+                "reg_type": "holding",
+                "address": 167,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 169",
+                "reg_type": "holding",
+                "address": 168,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 170",
+                "reg_type": "holding",
+                "address": 169,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 171",
+                "reg_type": "holding",
+                "address": 170,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 172",
+                "reg_type": "holding",
+                "address": 171,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 173",
+                "reg_type": "holding",
+                "address": 172,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 174",
+                "reg_type": "holding",
+                "address": 173,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 175",
+                "reg_type": "holding",
+                "address": 174,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 176",
+                "reg_type": "holding",
+                "address": 175,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 177",
+                "reg_type": "holding",
+                "address": 176,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 178",
+                "reg_type": "holding",
+                "address": 177,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 179",
+                "reg_type": "holding",
+                "address": 178,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 180",
+                "reg_type": "holding",
+                "address": 179,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 181",
+                "reg_type": "holding",
+                "address": 180,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 182",
+                "reg_type": "holding",
+                "address": 181,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 183",
+                "reg_type": "holding",
+                "address": 182,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 184",
+                "reg_type": "holding",
+                "address": 183,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 185",
+                "reg_type": "holding",
+                "address": 184,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 186",
+                "reg_type": "holding",
+                "address": 185,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 187",
+                "reg_type": "holding",
+                "address": 186,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 188",
+                "reg_type": "holding",
+                "address": 187,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 189",
+                "reg_type": "holding",
+                "address": 188,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 190",
+                "reg_type": "holding",
+                "address": 189,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 191",
+                "reg_type": "holding",
+                "address": 190,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 192",
+                "reg_type": "holding",
+                "address": 191,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 193",
+                "reg_type": "holding",
+                "address": 192,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 194",
+                "reg_type": "holding",
+                "address": 193,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 195",
+                "reg_type": "holding",
+                "address": 194,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 196",
+                "reg_type": "holding",
+                "address": 195,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 197",
+                "reg_type": "holding",
+                "address": 196,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 198",
+                "reg_type": "holding",
+                "address": 197,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 199",
+                "reg_type": "holding",
+                "address": 198,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 200",
+                "reg_type": "holding",
+                "address": 199,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 201",
+                "reg_type": "holding",
+                "address": 200,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 202",
+                "reg_type": "holding",
+                "address": 201,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 203",
+                "reg_type": "holding",
+                "address": 202,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 204",
+                "reg_type": "holding",
+                "address": 203,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 205",
+                "reg_type": "holding",
+                "address": 204,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 206",
+                "reg_type": "holding",
+                "address": 205,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 207",
+                "reg_type": "holding",
+                "address": 206,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 208",
+                "reg_type": "holding",
+                "address": 207,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 209",
+                "reg_type": "holding",
+                "address": 208,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 210",
+                "reg_type": "holding",
+                "address": 209,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 211",
+                "reg_type": "holding",
+                "address": 210,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 212",
+                "reg_type": "holding",
+                "address": 211,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 213",
+                "reg_type": "holding",
+                "address": 212,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 214",
+                "reg_type": "holding",
+                "address": 213,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 215",
+                "reg_type": "holding",
+                "address": 214,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 216",
+                "reg_type": "holding",
+                "address": 215,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 217",
+                "reg_type": "holding",
+                "address": 216,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 218",
+                "reg_type": "holding",
+                "address": 217,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 219",
+                "reg_type": "holding",
+                "address": 218,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 220",
+                "reg_type": "holding",
+                "address": 219,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 221",
+                "reg_type": "holding",
+                "address": 220,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 222",
+                "reg_type": "holding",
+                "address": 221,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 223",
+                "reg_type": "holding",
+                "address": 222,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 224",
+                "reg_type": "holding",
+                "address": 223,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 225",
+                "reg_type": "holding",
+                "address": 224,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 226",
+                "reg_type": "holding",
+                "address": 225,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 227",
+                "reg_type": "holding",
+                "address": 226,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 228",
+                "reg_type": "holding",
+                "address": 227,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 229",
+                "reg_type": "holding",
+                "address": 228,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 230",
+                "reg_type": "holding",
+                "address": 229,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 231",
+                "reg_type": "holding",
+                "address": 230,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 232",
+                "reg_type": "holding",
+                "address": 231,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 233",
+                "reg_type": "holding",
+                "address": 232,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 234",
+                "reg_type": "holding",
+                "address": 233,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 235",
+                "reg_type": "holding",
+                "address": 234,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 236",
+                "reg_type": "holding",
+                "address": 235,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 237",
+                "reg_type": "holding",
+                "address": 236,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 238",
+                "reg_type": "holding",
+                "address": 237,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 239",
+                "reg_type": "holding",
+                "address": 238,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 240",
+                "reg_type": "holding",
+                "address": 239,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 241",
+                "reg_type": "holding",
+                "address": 240,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 242",
+                "reg_type": "holding",
+                "address": 241,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 243",
+                "reg_type": "holding",
+                "address": 242,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 244",
+                "reg_type": "holding",
+                "address": 243,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 245",
+                "reg_type": "holding",
+                "address": 244,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 246",
+                "reg_type": "holding",
+                "address": 245,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 247",
+                "reg_type": "holding",
+                "address": 246,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 248",
+                "reg_type": "holding",
+                "address": 247,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 249",
+                "reg_type": "holding",
+                "address": 248,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 250",
+                "reg_type": "holding",
+                "address": 249,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 251",
+                "reg_type": "holding",
+                "address": 250,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 252",
+                "reg_type": "holding",
+                "address": 251,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 253",
+                "reg_type": "holding",
+                "address": 252,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 254",
+                "reg_type": "holding",
+                "address": 253,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 255",
+                "reg_type": "holding",
+                "address": 254,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 256",
+                "reg_type": "holding",
+                "address": 255,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 257",
+                "reg_type": "holding",
+                "address": 256,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 258",
+                "reg_type": "holding",
+                "address": 257,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 259",
+                "reg_type": "holding",
+                "address": 258,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 260",
+                "reg_type": "holding",
+                "address": 259,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 261",
+                "reg_type": "holding",
+                "address": 260,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 262",
+                "reg_type": "holding",
+                "address": 261,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 263",
+                "reg_type": "holding",
+                "address": 262,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 264",
+                "reg_type": "holding",
+                "address": 263,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 265",
+                "reg_type": "holding",
+                "address": 264,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 266",
+                "reg_type": "holding",
+                "address": 265,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 267",
+                "reg_type": "holding",
+                "address": 266,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 268",
+                "reg_type": "holding",
+                "address": 267,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 269",
+                "reg_type": "holding",
+                "address": 268,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 270",
+                "reg_type": "holding",
+                "address": 269,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 271",
+                "reg_type": "holding",
+                "address": 270,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 272",
+                "reg_type": "holding",
+                "address": 271,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 273",
+                "reg_type": "holding",
+                "address": 272,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 274",
+                "reg_type": "holding",
+                "address": 273,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 275",
+                "reg_type": "holding",
+                "address": 274,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 276",
+                "reg_type": "holding",
+                "address": 275,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 277",
+                "reg_type": "holding",
+                "address": 276,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 278",
+                "reg_type": "holding",
+                "address": 277,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 279",
+                "reg_type": "holding",
+                "address": 278,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 280",
+                "reg_type": "holding",
+                "address": 279,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 281",
+                "reg_type": "holding",
+                "address": 280,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 282",
+                "reg_type": "holding",
+                "address": 281,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 283",
+                "reg_type": "holding",
+                "address": 282,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 284",
+                "reg_type": "holding",
+                "address": 283,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 285",
+                "reg_type": "holding",
+                "address": 284,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 286",
+                "reg_type": "holding",
+                "address": 285,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 287",
+                "reg_type": "holding",
+                "address": 286,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 288",
+                "reg_type": "holding",
+                "address": 287,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 289",
+                "reg_type": "holding",
+                "address": 288,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 290",
+                "reg_type": "holding",
+                "address": 289,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 291",
+                "reg_type": "holding",
+                "address": 290,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 292",
+                "reg_type": "holding",
+                "address": 291,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 293",
+                "reg_type": "holding",
+                "address": 292,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 294",
+                "reg_type": "holding",
+                "address": 293,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 295",
+                "reg_type": "holding",
+                "address": 294,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 296",
+                "reg_type": "holding",
+                "address": 295,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 297",
+                "reg_type": "holding",
+                "address": 296,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 298",
+                "reg_type": "holding",
+                "address": 297,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 299",
+                "reg_type": "holding",
+                "address": 298,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 300",
+                "reg_type": "holding",
+                "address": 299,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 301",
+                "reg_type": "holding",
+                "address": 300,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 302",
+                "reg_type": "holding",
+                "address": 301,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 303",
+                "reg_type": "holding",
+                "address": 302,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 304",
+                "reg_type": "holding",
+                "address": 303,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 305",
+                "reg_type": "holding",
+                "address": 304,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 306",
+                "reg_type": "holding",
+                "address": 305,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 307",
+                "reg_type": "holding",
+                "address": 306,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 308",
+                "reg_type": "holding",
+                "address": 307,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 309",
+                "reg_type": "holding",
+                "address": 308,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 310",
+                "reg_type": "holding",
+                "address": 309,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 311",
+                "reg_type": "holding",
+                "address": 310,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 312",
+                "reg_type": "holding",
+                "address": 311,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 313",
+                "reg_type": "holding",
+                "address": 312,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 314",
+                "reg_type": "holding",
+                "address": 313,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 315",
+                "reg_type": "holding",
+                "address": 314,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 316",
+                "reg_type": "holding",
+                "address": 315,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 317",
+                "reg_type": "holding",
+                "address": 316,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 318",
+                "reg_type": "holding",
+                "address": 317,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 319",
+                "reg_type": "holding",
+                "address": 318,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 320",
+                "reg_type": "holding",
+                "address": 319,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 321",
+                "reg_type": "holding",
+                "address": 320,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 322",
+                "reg_type": "holding",
+                "address": 321,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 323",
+                "reg_type": "holding",
+                "address": 322,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 324",
+                "reg_type": "holding",
+                "address": 323,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 325",
+                "reg_type": "holding",
+                "address": 324,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 326",
+                "reg_type": "holding",
+                "address": 325,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 327",
+                "reg_type": "holding",
+                "address": 326,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 328",
+                "reg_type": "holding",
+                "address": 327,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 329",
+                "reg_type": "holding",
+                "address": 328,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 330",
+                "reg_type": "holding",
+                "address": 329,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 331",
+                "reg_type": "holding",
+                "address": 330,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 332",
+                "reg_type": "holding",
+                "address": 331,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 333",
+                "reg_type": "holding",
+                "address": 332,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 334",
+                "reg_type": "holding",
+                "address": 333,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 335",
+                "reg_type": "holding",
+                "address": 334,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 336",
+                "reg_type": "holding",
+                "address": 335,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 337",
+                "reg_type": "holding",
+                "address": 336,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 338",
+                "reg_type": "holding",
+                "address": 337,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 339",
+                "reg_type": "holding",
+                "address": 338,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 340",
+                "reg_type": "holding",
+                "address": 339,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 341",
+                "reg_type": "holding",
+                "address": 340,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 342",
+                "reg_type": "holding",
+                "address": 341,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 343",
+                "reg_type": "holding",
+                "address": 342,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 344",
+                "reg_type": "holding",
+                "address": 343,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 345",
+                "reg_type": "holding",
+                "address": 344,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 346",
+                "reg_type": "holding",
+                "address": 345,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 347",
+                "reg_type": "holding",
+                "address": 346,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 348",
+                "reg_type": "holding",
+                "address": 347,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 349",
+                "reg_type": "holding",
+                "address": 348,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 350",
+                "reg_type": "holding",
+                "address": 349,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 351",
+                "reg_type": "holding",
+                "address": 350,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 352",
+                "reg_type": "holding",
+                "address": 351,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 353",
+                "reg_type": "holding",
+                "address": 352,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 354",
+                "reg_type": "holding",
+                "address": 353,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 355",
+                "reg_type": "holding",
+                "address": 354,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 356",
+                "reg_type": "holding",
+                "address": 355,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 357",
+                "reg_type": "holding",
+                "address": 356,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 358",
+                "reg_type": "holding",
+                "address": 357,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 359",
+                "reg_type": "holding",
+                "address": 358,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 360",
+                "reg_type": "holding",
+                "address": 359,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 361",
+                "reg_type": "holding",
+                "address": 360,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 362",
+                "reg_type": "holding",
+                "address": 361,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 363",
+                "reg_type": "holding",
+                "address": 362,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 364",
+                "reg_type": "holding",
+                "address": 363,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 365",
+                "reg_type": "holding",
+                "address": 364,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 366",
+                "reg_type": "holding",
+                "address": 365,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 367",
+                "reg_type": "holding",
+                "address": 366,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 368",
+                "reg_type": "holding",
+                "address": 367,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 369",
+                "reg_type": "holding",
+                "address": 368,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 370",
+                "reg_type": "holding",
+                "address": 369,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 371",
+                "reg_type": "holding",
+                "address": 370,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 372",
+                "reg_type": "holding",
+                "address": 371,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 373",
+                "reg_type": "holding",
+                "address": 372,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 374",
+                "reg_type": "holding",
+                "address": 373,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 375",
+                "reg_type": "holding",
+                "address": 374,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 376",
+                "reg_type": "holding",
+                "address": 375,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 377",
+                "reg_type": "holding",
+                "address": 376,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 378",
+                "reg_type": "holding",
+                "address": 377,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 379",
+                "reg_type": "holding",
+                "address": 378,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 380",
+                "reg_type": "holding",
+                "address": 379,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 381",
+                "reg_type": "holding",
+                "address": 380,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 382",
+                "reg_type": "holding",
+                "address": 381,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 383",
+                "reg_type": "holding",
+                "address": 382,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 384",
+                "reg_type": "holding",
+                "address": 383,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 385",
+                "reg_type": "holding",
+                "address": 384,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 386",
+                "reg_type": "holding",
+                "address": 385,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 387",
+                "reg_type": "holding",
+                "address": 386,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 388",
+                "reg_type": "holding",
+                "address": 387,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 389",
+                "reg_type": "holding",
+                "address": 388,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 390",
+                "reg_type": "holding",
+                "address": 389,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 391",
+                "reg_type": "holding",
+                "address": 390,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 392",
+                "reg_type": "holding",
+                "address": 391,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 393",
+                "reg_type": "holding",
+                "address": 392,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 394",
+                "reg_type": "holding",
+                "address": 393,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 395",
+                "reg_type": "holding",
+                "address": 394,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 396",
+                "reg_type": "holding",
+                "address": 395,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 397",
+                "reg_type": "holding",
+                "address": 396,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 398",
+                "reg_type": "holding",
+                "address": 397,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 399",
+                "reg_type": "holding",
+                "address": 398,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 400",
+                "reg_type": "holding",
+                "address": 399,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 401",
+                "reg_type": "holding",
+                "address": 400,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 402",
+                "reg_type": "holding",
+                "address": 401,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 403",
+                "reg_type": "holding",
+                "address": 402,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 404",
+                "reg_type": "holding",
+                "address": 403,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 405",
+                "reg_type": "holding",
+                "address": 404,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 406",
+                "reg_type": "holding",
+                "address": 405,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 407",
+                "reg_type": "holding",
+                "address": 406,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 408",
+                "reg_type": "holding",
+                "address": 407,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 409",
+                "reg_type": "holding",
+                "address": 408,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 410",
+                "reg_type": "holding",
+                "address": 409,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 411",
+                "reg_type": "holding",
+                "address": 410,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 412",
+                "reg_type": "holding",
+                "address": 411,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 413",
+                "reg_type": "holding",
+                "address": 412,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 414",
+                "reg_type": "holding",
+                "address": 413,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 415",
+                "reg_type": "holding",
+                "address": 414,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 416",
+                "reg_type": "holding",
+                "address": 415,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 417",
+                "reg_type": "holding",
+                "address": 416,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 418",
+                "reg_type": "holding",
+                "address": 417,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 419",
+                "reg_type": "holding",
+                "address": 418,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 420",
+                "reg_type": "holding",
+                "address": 419,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 421",
+                "reg_type": "holding",
+                "address": 420,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 422",
+                "reg_type": "holding",
+                "address": 421,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 423",
+                "reg_type": "holding",
+                "address": 422,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 424",
+                "reg_type": "holding",
+                "address": 423,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 425",
+                "reg_type": "holding",
+                "address": 424,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 426",
+                "reg_type": "holding",
+                "address": 425,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 427",
+                "reg_type": "holding",
+                "address": 426,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 428",
+                "reg_type": "holding",
+                "address": 427,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 429",
+                "reg_type": "holding",
+                "address": 428,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 430",
+                "reg_type": "holding",
+                "address": 429,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 431",
+                "reg_type": "holding",
+                "address": 430,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 432",
+                "reg_type": "holding",
+                "address": 431,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 433",
+                "reg_type": "holding",
+                "address": 432,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 434",
+                "reg_type": "holding",
+                "address": 433,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 435",
+                "reg_type": "holding",
+                "address": 434,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 436",
+                "reg_type": "holding",
+                "address": 435,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 437",
+                "reg_type": "holding",
+                "address": 436,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 438",
+                "reg_type": "holding",
+                "address": 437,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 439",
+                "reg_type": "holding",
+                "address": 438,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 440",
+                "reg_type": "holding",
+                "address": 439,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 441",
+                "reg_type": "holding",
+                "address": 440,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 442",
+                "reg_type": "holding",
+                "address": 441,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 443",
+                "reg_type": "holding",
+                "address": 442,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 444",
+                "reg_type": "holding",
+                "address": 443,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 445",
+                "reg_type": "holding",
+                "address": 444,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 446",
+                "reg_type": "holding",
+                "address": 445,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 447",
+                "reg_type": "holding",
+                "address": 446,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 448",
+                "reg_type": "holding",
+                "address": 447,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 449",
+                "reg_type": "holding",
+                "address": 448,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 450",
+                "reg_type": "holding",
+                "address": 449,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 451",
+                "reg_type": "holding",
+                "address": 450,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 452",
+                "reg_type": "holding",
+                "address": 451,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 453",
+                "reg_type": "holding",
+                "address": 452,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 454",
+                "reg_type": "holding",
+                "address": 453,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 455",
+                "reg_type": "holding",
+                "address": 454,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 456",
+                "reg_type": "holding",
+                "address": 455,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 457",
+                "reg_type": "holding",
+                "address": 456,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 458",
+                "reg_type": "holding",
+                "address": 457,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 459",
+                "reg_type": "holding",
+                "address": 458,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 460",
+                "reg_type": "holding",
+                "address": 459,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 461",
+                "reg_type": "holding",
+                "address": 460,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 462",
+                "reg_type": "holding",
+                "address": 461,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 463",
+                "reg_type": "holding",
+                "address": 462,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 464",
+                "reg_type": "holding",
+                "address": 463,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 465",
+                "reg_type": "holding",
+                "address": 464,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 466",
+                "reg_type": "holding",
+                "address": 465,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 467",
+                "reg_type": "holding",
+                "address": 466,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 468",
+                "reg_type": "holding",
+                "address": 467,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 469",
+                "reg_type": "holding",
+                "address": 468,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 470",
+                "reg_type": "holding",
+                "address": 469,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 471",
+                "reg_type": "holding",
+                "address": 470,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 472",
+                "reg_type": "holding",
+                "address": 471,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 473",
+                "reg_type": "holding",
+                "address": 472,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 474",
+                "reg_type": "holding",
+                "address": 473,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 475",
+                "reg_type": "holding",
+                "address": 474,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 476",
+                "reg_type": "holding",
+                "address": 475,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 477",
+                "reg_type": "holding",
+                "address": 476,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 478",
+                "reg_type": "holding",
+                "address": 477,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 479",
+                "reg_type": "holding",
+                "address": 478,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 480",
+                "reg_type": "holding",
+                "address": 479,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 481",
+                "reg_type": "holding",
+                "address": 480,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 482",
+                "reg_type": "holding",
+                "address": 481,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 483",
+                "reg_type": "holding",
+                "address": 482,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 484",
+                "reg_type": "holding",
+                "address": 483,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 485",
+                "reg_type": "holding",
+                "address": 484,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 486",
+                "reg_type": "holding",
+                "address": 485,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 487",
+                "reg_type": "holding",
+                "address": 486,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 488",
+                "reg_type": "holding",
+                "address": 487,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 489",
+                "reg_type": "holding",
+                "address": 488,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 490",
+                "reg_type": "holding",
+                "address": 489,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 491",
+                "reg_type": "holding",
+                "address": 490,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 492",
+                "reg_type": "holding",
+                "address": 491,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 493",
+                "reg_type": "holding",
+                "address": 492,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 494",
+                "reg_type": "holding",
+                "address": 493,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 495",
+                "reg_type": "holding",
+                "address": 494,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 496",
+                "reg_type": "holding",
+                "address": 495,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 497",
+                "reg_type": "holding",
+                "address": 496,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 498",
+                "reg_type": "holding",
+                "address": 497,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 499",
+                "reg_type": "holding",
+                "address": 498,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 500",
+                "reg_type": "holding",
+                "address": 499,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 501",
+                "reg_type": "holding",
+                "address": 500,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 502",
+                "reg_type": "holding",
+                "address": 501,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 503",
+                "reg_type": "holding",
+                "address": 502,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 504",
+                "reg_type": "holding",
+                "address": 503,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 505",
+                "reg_type": "holding",
+                "address": 504,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 506",
+                "reg_type": "holding",
+                "address": 505,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 507",
+                "reg_type": "holding",
+                "address": 506,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 508",
+                "reg_type": "holding",
+                "address": 507,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 509",
+                "reg_type": "holding",
+                "address": 508,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 510",
+                "reg_type": "holding",
+                "address": 509,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 511",
+                "reg_type": "holding",
+                "address": 510,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            },
+            {
+                "name": "Channel 512",
+                "reg_type": "holding",
+                "address": 511,
+                "type": "range",
+                "max": 255,
+                "enabled": false,
+                "group": "g_dmx"
+            }
+        ],
+        "translations": {
+            "en": {
+                "wb_mgu_dmx_template_title": "WB-MGU DMX gateway (port in dmx mode, Modbus TCP)",
+                "g_general_title": "General",
+                "g_dmx_title": "DMX Channels"
+            },
+            "ru": {
+                "wb_mgu_dmx_template_title": "Шлюз WB-MGU DMX (порт в режиме dmx, Modbus TCP)",
+                "g_general_title": "Общее",
+                "g_dmx_title": "Каналы DMX",
+                "Blackout": "Погасить всё",
+                "Active": "Передача DMX",
+                "Slots": "Слотов в кадре",
+                "Refresh Rate": "Частота кадров",
+                "Frames Sent": "Кадров отправлено",
+                "TX Disabled": "Передатчик отключён",
+                "Channel 1": "Канал 1",
+                "Channel 2": "Канал 2",
+                "Channel 3": "Канал 3",
+                "Channel 4": "Канал 4",
+                "Channel 5": "Канал 5",
+                "Channel 6": "Канал 6",
+                "Channel 7": "Канал 7",
+                "Channel 8": "Канал 8",
+                "Channel 9": "Канал 9",
+                "Channel 10": "Канал 10",
+                "Channel 11": "Канал 11",
+                "Channel 12": "Канал 12",
+                "Channel 13": "Канал 13",
+                "Channel 14": "Канал 14",
+                "Channel 15": "Канал 15",
+                "Channel 16": "Канал 16",
+                "Channel 17": "Канал 17",
+                "Channel 18": "Канал 18",
+                "Channel 19": "Канал 19",
+                "Channel 20": "Канал 20",
+                "Channel 21": "Канал 21",
+                "Channel 22": "Канал 22",
+                "Channel 23": "Канал 23",
+                "Channel 24": "Канал 24",
+                "Channel 25": "Канал 25",
+                "Channel 26": "Канал 26",
+                "Channel 27": "Канал 27",
+                "Channel 28": "Канал 28",
+                "Channel 29": "Канал 29",
+                "Channel 30": "Канал 30",
+                "Channel 31": "Канал 31",
+                "Channel 32": "Канал 32",
+                "Channel 33": "Канал 33",
+                "Channel 34": "Канал 34",
+                "Channel 35": "Канал 35",
+                "Channel 36": "Канал 36",
+                "Channel 37": "Канал 37",
+                "Channel 38": "Канал 38",
+                "Channel 39": "Канал 39",
+                "Channel 40": "Канал 40",
+                "Channel 41": "Канал 41",
+                "Channel 42": "Канал 42",
+                "Channel 43": "Канал 43",
+                "Channel 44": "Канал 44",
+                "Channel 45": "Канал 45",
+                "Channel 46": "Канал 46",
+                "Channel 47": "Канал 47",
+                "Channel 48": "Канал 48",
+                "Channel 49": "Канал 49",
+                "Channel 50": "Канал 50",
+                "Channel 51": "Канал 51",
+                "Channel 52": "Канал 52",
+                "Channel 53": "Канал 53",
+                "Channel 54": "Канал 54",
+                "Channel 55": "Канал 55",
+                "Channel 56": "Канал 56",
+                "Channel 57": "Канал 57",
+                "Channel 58": "Канал 58",
+                "Channel 59": "Канал 59",
+                "Channel 60": "Канал 60",
+                "Channel 61": "Канал 61",
+                "Channel 62": "Канал 62",
+                "Channel 63": "Канал 63",
+                "Channel 64": "Канал 64",
+                "Channel 65": "Канал 65",
+                "Channel 66": "Канал 66",
+                "Channel 67": "Канал 67",
+                "Channel 68": "Канал 68",
+                "Channel 69": "Канал 69",
+                "Channel 70": "Канал 70",
+                "Channel 71": "Канал 71",
+                "Channel 72": "Канал 72",
+                "Channel 73": "Канал 73",
+                "Channel 74": "Канал 74",
+                "Channel 75": "Канал 75",
+                "Channel 76": "Канал 76",
+                "Channel 77": "Канал 77",
+                "Channel 78": "Канал 78",
+                "Channel 79": "Канал 79",
+                "Channel 80": "Канал 80",
+                "Channel 81": "Канал 81",
+                "Channel 82": "Канал 82",
+                "Channel 83": "Канал 83",
+                "Channel 84": "Канал 84",
+                "Channel 85": "Канал 85",
+                "Channel 86": "Канал 86",
+                "Channel 87": "Канал 87",
+                "Channel 88": "Канал 88",
+                "Channel 89": "Канал 89",
+                "Channel 90": "Канал 90",
+                "Channel 91": "Канал 91",
+                "Channel 92": "Канал 92",
+                "Channel 93": "Канал 93",
+                "Channel 94": "Канал 94",
+                "Channel 95": "Канал 95",
+                "Channel 96": "Канал 96",
+                "Channel 97": "Канал 97",
+                "Channel 98": "Канал 98",
+                "Channel 99": "Канал 99",
+                "Channel 100": "Канал 100",
+                "Channel 101": "Канал 101",
+                "Channel 102": "Канал 102",
+                "Channel 103": "Канал 103",
+                "Channel 104": "Канал 104",
+                "Channel 105": "Канал 105",
+                "Channel 106": "Канал 106",
+                "Channel 107": "Канал 107",
+                "Channel 108": "Канал 108",
+                "Channel 109": "Канал 109",
+                "Channel 110": "Канал 110",
+                "Channel 111": "Канал 111",
+                "Channel 112": "Канал 112",
+                "Channel 113": "Канал 113",
+                "Channel 114": "Канал 114",
+                "Channel 115": "Канал 115",
+                "Channel 116": "Канал 116",
+                "Channel 117": "Канал 117",
+                "Channel 118": "Канал 118",
+                "Channel 119": "Канал 119",
+                "Channel 120": "Канал 120",
+                "Channel 121": "Канал 121",
+                "Channel 122": "Канал 122",
+                "Channel 123": "Канал 123",
+                "Channel 124": "Канал 124",
+                "Channel 125": "Канал 125",
+                "Channel 126": "Канал 126",
+                "Channel 127": "Канал 127",
+                "Channel 128": "Канал 128",
+                "Channel 129": "Канал 129",
+                "Channel 130": "Канал 130",
+                "Channel 131": "Канал 131",
+                "Channel 132": "Канал 132",
+                "Channel 133": "Канал 133",
+                "Channel 134": "Канал 134",
+                "Channel 135": "Канал 135",
+                "Channel 136": "Канал 136",
+                "Channel 137": "Канал 137",
+                "Channel 138": "Канал 138",
+                "Channel 139": "Канал 139",
+                "Channel 140": "Канал 140",
+                "Channel 141": "Канал 141",
+                "Channel 142": "Канал 142",
+                "Channel 143": "Канал 143",
+                "Channel 144": "Канал 144",
+                "Channel 145": "Канал 145",
+                "Channel 146": "Канал 146",
+                "Channel 147": "Канал 147",
+                "Channel 148": "Канал 148",
+                "Channel 149": "Канал 149",
+                "Channel 150": "Канал 150",
+                "Channel 151": "Канал 151",
+                "Channel 152": "Канал 152",
+                "Channel 153": "Канал 153",
+                "Channel 154": "Канал 154",
+                "Channel 155": "Канал 155",
+                "Channel 156": "Канал 156",
+                "Channel 157": "Канал 157",
+                "Channel 158": "Канал 158",
+                "Channel 159": "Канал 159",
+                "Channel 160": "Канал 160",
+                "Channel 161": "Канал 161",
+                "Channel 162": "Канал 162",
+                "Channel 163": "Канал 163",
+                "Channel 164": "Канал 164",
+                "Channel 165": "Канал 165",
+                "Channel 166": "Канал 166",
+                "Channel 167": "Канал 167",
+                "Channel 168": "Канал 168",
+                "Channel 169": "Канал 169",
+                "Channel 170": "Канал 170",
+                "Channel 171": "Канал 171",
+                "Channel 172": "Канал 172",
+                "Channel 173": "Канал 173",
+                "Channel 174": "Канал 174",
+                "Channel 175": "Канал 175",
+                "Channel 176": "Канал 176",
+                "Channel 177": "Канал 177",
+                "Channel 178": "Канал 178",
+                "Channel 179": "Канал 179",
+                "Channel 180": "Канал 180",
+                "Channel 181": "Канал 181",
+                "Channel 182": "Канал 182",
+                "Channel 183": "Канал 183",
+                "Channel 184": "Канал 184",
+                "Channel 185": "Канал 185",
+                "Channel 186": "Канал 186",
+                "Channel 187": "Канал 187",
+                "Channel 188": "Канал 188",
+                "Channel 189": "Канал 189",
+                "Channel 190": "Канал 190",
+                "Channel 191": "Канал 191",
+                "Channel 192": "Канал 192",
+                "Channel 193": "Канал 193",
+                "Channel 194": "Канал 194",
+                "Channel 195": "Канал 195",
+                "Channel 196": "Канал 196",
+                "Channel 197": "Канал 197",
+                "Channel 198": "Канал 198",
+                "Channel 199": "Канал 199",
+                "Channel 200": "Канал 200",
+                "Channel 201": "Канал 201",
+                "Channel 202": "Канал 202",
+                "Channel 203": "Канал 203",
+                "Channel 204": "Канал 204",
+                "Channel 205": "Канал 205",
+                "Channel 206": "Канал 206",
+                "Channel 207": "Канал 207",
+                "Channel 208": "Канал 208",
+                "Channel 209": "Канал 209",
+                "Channel 210": "Канал 210",
+                "Channel 211": "Канал 211",
+                "Channel 212": "Канал 212",
+                "Channel 213": "Канал 213",
+                "Channel 214": "Канал 214",
+                "Channel 215": "Канал 215",
+                "Channel 216": "Канал 216",
+                "Channel 217": "Канал 217",
+                "Channel 218": "Канал 218",
+                "Channel 219": "Канал 219",
+                "Channel 220": "Канал 220",
+                "Channel 221": "Канал 221",
+                "Channel 222": "Канал 222",
+                "Channel 223": "Канал 223",
+                "Channel 224": "Канал 224",
+                "Channel 225": "Канал 225",
+                "Channel 226": "Канал 226",
+                "Channel 227": "Канал 227",
+                "Channel 228": "Канал 228",
+                "Channel 229": "Канал 229",
+                "Channel 230": "Канал 230",
+                "Channel 231": "Канал 231",
+                "Channel 232": "Канал 232",
+                "Channel 233": "Канал 233",
+                "Channel 234": "Канал 234",
+                "Channel 235": "Канал 235",
+                "Channel 236": "Канал 236",
+                "Channel 237": "Канал 237",
+                "Channel 238": "Канал 238",
+                "Channel 239": "Канал 239",
+                "Channel 240": "Канал 240",
+                "Channel 241": "Канал 241",
+                "Channel 242": "Канал 242",
+                "Channel 243": "Канал 243",
+                "Channel 244": "Канал 244",
+                "Channel 245": "Канал 245",
+                "Channel 246": "Канал 246",
+                "Channel 247": "Канал 247",
+                "Channel 248": "Канал 248",
+                "Channel 249": "Канал 249",
+                "Channel 250": "Канал 250",
+                "Channel 251": "Канал 251",
+                "Channel 252": "Канал 252",
+                "Channel 253": "Канал 253",
+                "Channel 254": "Канал 254",
+                "Channel 255": "Канал 255",
+                "Channel 256": "Канал 256",
+                "Channel 257": "Канал 257",
+                "Channel 258": "Канал 258",
+                "Channel 259": "Канал 259",
+                "Channel 260": "Канал 260",
+                "Channel 261": "Канал 261",
+                "Channel 262": "Канал 262",
+                "Channel 263": "Канал 263",
+                "Channel 264": "Канал 264",
+                "Channel 265": "Канал 265",
+                "Channel 266": "Канал 266",
+                "Channel 267": "Канал 267",
+                "Channel 268": "Канал 268",
+                "Channel 269": "Канал 269",
+                "Channel 270": "Канал 270",
+                "Channel 271": "Канал 271",
+                "Channel 272": "Канал 272",
+                "Channel 273": "Канал 273",
+                "Channel 274": "Канал 274",
+                "Channel 275": "Канал 275",
+                "Channel 276": "Канал 276",
+                "Channel 277": "Канал 277",
+                "Channel 278": "Канал 278",
+                "Channel 279": "Канал 279",
+                "Channel 280": "Канал 280",
+                "Channel 281": "Канал 281",
+                "Channel 282": "Канал 282",
+                "Channel 283": "Канал 283",
+                "Channel 284": "Канал 284",
+                "Channel 285": "Канал 285",
+                "Channel 286": "Канал 286",
+                "Channel 287": "Канал 287",
+                "Channel 288": "Канал 288",
+                "Channel 289": "Канал 289",
+                "Channel 290": "Канал 290",
+                "Channel 291": "Канал 291",
+                "Channel 292": "Канал 292",
+                "Channel 293": "Канал 293",
+                "Channel 294": "Канал 294",
+                "Channel 295": "Канал 295",
+                "Channel 296": "Канал 296",
+                "Channel 297": "Канал 297",
+                "Channel 298": "Канал 298",
+                "Channel 299": "Канал 299",
+                "Channel 300": "Канал 300",
+                "Channel 301": "Канал 301",
+                "Channel 302": "Канал 302",
+                "Channel 303": "Канал 303",
+                "Channel 304": "Канал 304",
+                "Channel 305": "Канал 305",
+                "Channel 306": "Канал 306",
+                "Channel 307": "Канал 307",
+                "Channel 308": "Канал 308",
+                "Channel 309": "Канал 309",
+                "Channel 310": "Канал 310",
+                "Channel 311": "Канал 311",
+                "Channel 312": "Канал 312",
+                "Channel 313": "Канал 313",
+                "Channel 314": "Канал 314",
+                "Channel 315": "Канал 315",
+                "Channel 316": "Канал 316",
+                "Channel 317": "Канал 317",
+                "Channel 318": "Канал 318",
+                "Channel 319": "Канал 319",
+                "Channel 320": "Канал 320",
+                "Channel 321": "Канал 321",
+                "Channel 322": "Канал 322",
+                "Channel 323": "Канал 323",
+                "Channel 324": "Канал 324",
+                "Channel 325": "Канал 325",
+                "Channel 326": "Канал 326",
+                "Channel 327": "Канал 327",
+                "Channel 328": "Канал 328",
+                "Channel 329": "Канал 329",
+                "Channel 330": "Канал 330",
+                "Channel 331": "Канал 331",
+                "Channel 332": "Канал 332",
+                "Channel 333": "Канал 333",
+                "Channel 334": "Канал 334",
+                "Channel 335": "Канал 335",
+                "Channel 336": "Канал 336",
+                "Channel 337": "Канал 337",
+                "Channel 338": "Канал 338",
+                "Channel 339": "Канал 339",
+                "Channel 340": "Канал 340",
+                "Channel 341": "Канал 341",
+                "Channel 342": "Канал 342",
+                "Channel 343": "Канал 343",
+                "Channel 344": "Канал 344",
+                "Channel 345": "Канал 345",
+                "Channel 346": "Канал 346",
+                "Channel 347": "Канал 347",
+                "Channel 348": "Канал 348",
+                "Channel 349": "Канал 349",
+                "Channel 350": "Канал 350",
+                "Channel 351": "Канал 351",
+                "Channel 352": "Канал 352",
+                "Channel 353": "Канал 353",
+                "Channel 354": "Канал 354",
+                "Channel 355": "Канал 355",
+                "Channel 356": "Канал 356",
+                "Channel 357": "Канал 357",
+                "Channel 358": "Канал 358",
+                "Channel 359": "Канал 359",
+                "Channel 360": "Канал 360",
+                "Channel 361": "Канал 361",
+                "Channel 362": "Канал 362",
+                "Channel 363": "Канал 363",
+                "Channel 364": "Канал 364",
+                "Channel 365": "Канал 365",
+                "Channel 366": "Канал 366",
+                "Channel 367": "Канал 367",
+                "Channel 368": "Канал 368",
+                "Channel 369": "Канал 369",
+                "Channel 370": "Канал 370",
+                "Channel 371": "Канал 371",
+                "Channel 372": "Канал 372",
+                "Channel 373": "Канал 373",
+                "Channel 374": "Канал 374",
+                "Channel 375": "Канал 375",
+                "Channel 376": "Канал 376",
+                "Channel 377": "Канал 377",
+                "Channel 378": "Канал 378",
+                "Channel 379": "Канал 379",
+                "Channel 380": "Канал 380",
+                "Channel 381": "Канал 381",
+                "Channel 382": "Канал 382",
+                "Channel 383": "Канал 383",
+                "Channel 384": "Канал 384",
+                "Channel 385": "Канал 385",
+                "Channel 386": "Канал 386",
+                "Channel 387": "Канал 387",
+                "Channel 388": "Канал 388",
+                "Channel 389": "Канал 389",
+                "Channel 390": "Канал 390",
+                "Channel 391": "Канал 391",
+                "Channel 392": "Канал 392",
+                "Channel 393": "Канал 393",
+                "Channel 394": "Канал 394",
+                "Channel 395": "Канал 395",
+                "Channel 396": "Канал 396",
+                "Channel 397": "Канал 397",
+                "Channel 398": "Канал 398",
+                "Channel 399": "Канал 399",
+                "Channel 400": "Канал 400",
+                "Channel 401": "Канал 401",
+                "Channel 402": "Канал 402",
+                "Channel 403": "Канал 403",
+                "Channel 404": "Канал 404",
+                "Channel 405": "Канал 405",
+                "Channel 406": "Канал 406",
+                "Channel 407": "Канал 407",
+                "Channel 408": "Канал 408",
+                "Channel 409": "Канал 409",
+                "Channel 410": "Канал 410",
+                "Channel 411": "Канал 411",
+                "Channel 412": "Канал 412",
+                "Channel 413": "Канал 413",
+                "Channel 414": "Канал 414",
+                "Channel 415": "Канал 415",
+                "Channel 416": "Канал 416",
+                "Channel 417": "Канал 417",
+                "Channel 418": "Канал 418",
+                "Channel 419": "Канал 419",
+                "Channel 420": "Канал 420",
+                "Channel 421": "Канал 421",
+                "Channel 422": "Канал 422",
+                "Channel 423": "Канал 423",
+                "Channel 424": "Канал 424",
+                "Channel 425": "Канал 425",
+                "Channel 426": "Канал 426",
+                "Channel 427": "Канал 427",
+                "Channel 428": "Канал 428",
+                "Channel 429": "Канал 429",
+                "Channel 430": "Канал 430",
+                "Channel 431": "Канал 431",
+                "Channel 432": "Канал 432",
+                "Channel 433": "Канал 433",
+                "Channel 434": "Канал 434",
+                "Channel 435": "Канал 435",
+                "Channel 436": "Канал 436",
+                "Channel 437": "Канал 437",
+                "Channel 438": "Канал 438",
+                "Channel 439": "Канал 439",
+                "Channel 440": "Канал 440",
+                "Channel 441": "Канал 441",
+                "Channel 442": "Канал 442",
+                "Channel 443": "Канал 443",
+                "Channel 444": "Канал 444",
+                "Channel 445": "Канал 445",
+                "Channel 446": "Канал 446",
+                "Channel 447": "Канал 447",
+                "Channel 448": "Канал 448",
+                "Channel 449": "Канал 449",
+                "Channel 450": "Канал 450",
+                "Channel 451": "Канал 451",
+                "Channel 452": "Канал 452",
+                "Channel 453": "Канал 453",
+                "Channel 454": "Канал 454",
+                "Channel 455": "Канал 455",
+                "Channel 456": "Канал 456",
+                "Channel 457": "Канал 457",
+                "Channel 458": "Канал 458",
+                "Channel 459": "Канал 459",
+                "Channel 460": "Канал 460",
+                "Channel 461": "Канал 461",
+                "Channel 462": "Канал 462",
+                "Channel 463": "Канал 463",
+                "Channel 464": "Канал 464",
+                "Channel 465": "Канал 465",
+                "Channel 466": "Канал 466",
+                "Channel 467": "Канал 467",
+                "Channel 468": "Канал 468",
+                "Channel 469": "Канал 469",
+                "Channel 470": "Канал 470",
+                "Channel 471": "Канал 471",
+                "Channel 472": "Канал 472",
+                "Channel 473": "Канал 473",
+                "Channel 474": "Канал 474",
+                "Channel 475": "Канал 475",
+                "Channel 476": "Канал 476",
+                "Channel 477": "Канал 477",
+                "Channel 478": "Канал 478",
+                "Channel 479": "Канал 479",
+                "Channel 480": "Канал 480",
+                "Channel 481": "Канал 481",
+                "Channel 482": "Канал 482",
+                "Channel 483": "Канал 483",
+                "Channel 484": "Канал 484",
+                "Channel 485": "Канал 485",
+                "Channel 486": "Канал 486",
+                "Channel 487": "Канал 487",
+                "Channel 488": "Канал 488",
+                "Channel 489": "Канал 489",
+                "Channel 490": "Канал 490",
+                "Channel 491": "Канал 491",
+                "Channel 492": "Канал 492",
+                "Channel 493": "Канал 493",
+                "Channel 494": "Канал 494",
+                "Channel 495": "Канал 495",
+                "Channel 496": "Канал 496",
+                "Channel 497": "Канал 497",
+                "Channel 498": "Канал 498",
+                "Channel 499": "Канал 499",
+                "Channel 500": "Канал 500",
+                "Channel 501": "Канал 501",
+                "Channel 502": "Канал 502",
+                "Channel 503": "Канал 503",
+                "Channel 504": "Канал 504",
+                "Channel 505": "Канал 505",
+                "Channel 506": "Канал 506",
+                "Channel 507": "Канал 507",
+                "Channel 508": "Канал 508",
+                "Channel 509": "Канал 509",
+                "Channel 510": "Канал 510",
+                "Channel 511": "Канал 511",
+                "Channel 512": "Канал 512"
+            }
+        }
+    }
+}

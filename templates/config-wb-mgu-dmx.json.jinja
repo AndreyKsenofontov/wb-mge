@@ -1,0 +1,115 @@
+{# wb-mqtt-serial template for a WB-MGU port running in dmx mode (Modbus TCP register map,
+   see main/bridge/dmx_modbus.h). Channels 1..ENABLED_CHANNELS are polled out of the box; the rest
+   are present but disabled, so the controller does not read 512 registers nobody asked for. -#}
+{% set CHANNELS_NUMBER = 512 -%}
+{% set ENABLED_CHANNELS = 32 -%}
+{
+    "title": "wb_mgu_dmx_template_title",
+    "device_type": "wb-mgu-dmx",
+    "group": "g-wb",
+    "device": {
+        "name": "WB-MGU DMX",
+        "id": "wb_mgu_dmx",
+        "max_read_registers": 125,
+
+        "groups": [
+            {
+                "title": "g_general_title",
+                "id": "g_general"
+            },
+            {
+                "title": "g_dmx_title",
+                "id": "g_dmx"
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "Blackout",
+                "reg_type": "holding",
+                "address": 1000,
+                "type": "pushbutton",
+                "on_value": 1,
+                "group": "g_general"
+            },
+            {
+                "name": "Active",
+                "reg_type": "holding",
+                "address": 1001,
+                "type": "switch",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "Slots",
+                "reg_type": "holding",
+                "address": 1002,
+                "type": "value",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "Refresh Rate",
+                "reg_type": "holding",
+                "address": 1003,
+                "type": "value",
+                "units": "Hz",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "Frames Sent",
+                "reg_type": "holding",
+                "address": 1004,
+                "format": "u32",
+                "word_order": "little_endian",
+                "type": "value",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {
+                "name": "TX Disabled",
+                "reg_type": "holding",
+                "address": 1006,
+                "type": "switch",
+                "readonly": true,
+                "group": "g_general"
+            },
+            {% for ch in range(1, CHANNELS_NUMBER + 1) -%}
+            {
+                "name": "Channel {{ch}}",
+                "reg_type": "holding",
+                "address": {{ch - 1}},
+                "type": "range",
+                "max": 255,
+                {% if ch > ENABLED_CHANNELS -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "g_dmx"
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
+        ],
+
+        "translations": {
+            "en": {
+                "wb_mgu_dmx_template_title": "WB-MGU DMX gateway (port in dmx mode, Modbus TCP)",
+                "g_general_title": "General",
+                "g_dmx_title": "DMX Channels"
+            },
+            "ru": {
+                "wb_mgu_dmx_template_title": "Шлюз WB-MGU DMX (порт в режиме dmx, Modbus TCP)",
+                "g_general_title": "Общее",
+                "g_dmx_title": "Каналы DMX",
+                "Blackout": "Погасить всё",
+                "Active": "Передача DMX",
+                "Slots": "Слотов в кадре",
+                "Refresh Rate": "Частота кадров",
+                "Frames Sent": "Кадров отправлено",
+                "TX Disabled": "Передатчик отключён",
+                {% for ch in range(1, CHANNELS_NUMBER + 1) -%}
+                "Channel {{ch}}": "Канал {{ch}}"{% if not loop.last %},{% endif %}
+                {% endfor -%}
+            }
+        }
+    }
+}
