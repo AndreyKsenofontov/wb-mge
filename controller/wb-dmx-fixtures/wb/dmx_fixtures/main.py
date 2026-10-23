@@ -1,7 +1,8 @@
 """Command line entry point of wb-dmx-fixtures.
 
     wb-dmx-fixtures [-c CONFIG]                    run the service (what the systemd unit does)
-    wb-dmx-fixtures import <manufacturer/fixture>  download OFL profiles into the library
+    wb-dmx-fixtures import <manufacturer/fixture | link>
+                                                   download OFL profiles into the library
     wb-dmx-fixtures update-schema                  regenerate the confed schema from the library
     wb-dmx-fixtures show <manufacturer/fixture> [--mode MODE]
                                                    print the controls a fixture gets
@@ -17,6 +18,7 @@ from pathlib import Path
 from typing import Optional
 
 from . import library, ofl
+from .config import ConfigError, load_setup
 from .mapping import build_mapping
 from .version import get_version
 
@@ -30,11 +32,17 @@ CONFIG_FILEPATH = "/etc/wb-dmx-fixtures.conf"
 SCHEMA_FILEPATH = "/var/lib/wb-mqtt-confed/schemas/wb-dmx-fixtures.schema.json"
 SERVICE_NAME = "wb-dmx-fixtures"
 
+LOG = logging.getLogger("wb-dmx-fixtures")
+
+
+def write_schema(schema_path: Path, profiles: dict) -> bool:
+    return library.write_schema(library.build_schema(profiles, CONFIG_FILEPATH, SERVICE_NAME), schema_path)
+
 
 def update_schema(schema_path: Path, library_dir: Path) -> int:
     profiles = library.list_profiles(library_dir)
-    library.write_schema(library.build_schema(profiles, CONFIG_FILEPATH, SERVICE_NAME), schema_path)
-    print(f"schema written to {schema_path}: {len(profiles)} profile(s)")
+    write_schema(schema_path, profiles)
+    print(f"schema {schema_path}: {len(profiles)} profile(s)")
     return EXIT_SUCCESS
 
 
@@ -74,28 +82,60 @@ def cmd_show(key: str, mode: Optional[str], library_dir: Path) -> int:
     return EXIT_SUCCESS
 
 
-def run_service(config_path: Path, library_dir: Path) -> int:
+def library_status(profiles: dict, result: library.ModelsResult) -> str:
+    """Text of the service device's "Fixture models" control."""
+    parts = [f"{len(profiles)} in the library"]
+    if result.imported:
+        parts.append("downloaded: " + ", ".join(result.imported))
+    parts += [f"{key}: {e}" for key, e in result.errors.items()]
+    return "; ".join(parts)
+
+
+def run_service(config_path: Path, library_dir: Path, schema_path: Path) -> int:
     # The MQTT client (wb_common) exists only on a controller; the library commands must work
     # without it, so the service module is imported here and not at module level.
-    from .service import (  # pylint: disable=import-outside-toplevel
-        ConfigError, DmxFixturesService, load_fixtures, publish_config_error,
-    )
+    from .service import DmxFixturesService, publish_config_error  # pylint: disable=import-outside-toplevel
+
+    def config_error(text: str) -> int:
+        print(f"configuration: {text}", file=sys.stderr)
+        publish_config_error(text)
+        return EXIT_CONFIG_ERROR
 
     if not config_path.is_file():
-        print(f"configuration file not found: {config_path}", file=sys.stderr)
-        return EXIT_CONFIG_ERROR
-    with open(config_path, encoding="utf-8") as f:
-        config = json.load(f)
-    if not isinstance(config.get("gateway"), dict):
-        print("configuration: gateway section is required", file=sys.stderr)
-        return EXIT_CONFIG_ERROR
+        return config_error(f"file not found: {config_path}")
     try:
-        fixtures = load_fixtures(config, library_dir)
-    except ConfigError as e:
-        print(f"configuration: {e}", file=sys.stderr)
-        publish_config_error(str(e))
-        return EXIT_CONFIG_ERROR
-    return DmxFixturesService(config, fixtures).run()
+        with open(config_path, encoding="utf-8") as f:
+            config = json.load(f)
+    except ValueError as e:
+        return config_error(f"{config_path} is not valid JSON: {e}")
+    if not isinstance(config.get("gateway"), dict):
+        return config_error("gateway section is required")
+
+    # Models first: the form only offers what is in the library, so a model added in the form is
+    # downloaded here and the regenerated schema shows it after a page reload.
+    result = library.ensure_models(list(config.get("models") or []), library_dir)
+    for key in result.imported:
+        LOG.info("model %s downloaded", key)
+    for key, e in result.errors.items():
+        LOG.warning("model %s: %s", key, e)
+    profiles = library.list_profiles(library_dir)
+    try:
+        if write_schema(schema_path, profiles):
+            LOG.info("confed schema updated: %d profile(s)", len(profiles))
+    except OSError as e:
+        LOG.warning("cannot write the confed schema %s: %s", schema_path, e)
+
+    used = {str(entry.get("fixture", "")) for entry in config.get("fixtures", [])}
+    retry = [key for key, e in result.errors.items() if e.transient and key in used and key not in profiles]
+    if retry:
+        # A network hiccup is not a config error: exit with a plain failure so systemd retries.
+        print(f"cannot download {', '.join(retry)}; retrying later", file=sys.stderr)
+        return EXIT_FAILURE
+    try:
+        setup = load_setup(config, profiles, {key: str(e) for key, e in result.errors.items()})
+    except (ConfigError, TypeError, ValueError) as e:   # a hand-edited value of a wrong type, too
+        return config_error(str(e))
+    return DmxFixturesService(config, setup, library_status(profiles, result)).run()
 
 
 def main(argv: list[str]) -> int:
@@ -107,7 +147,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--debug", action="store_true")
     sub = parser.add_subparsers(dest="command")
     p_import = sub.add_parser("import", help="download OFL profiles into the library")
-    p_import.add_argument("keys", nargs="+", metavar="manufacturer/fixture")
+    p_import.add_argument("keys", nargs="+", metavar="manufacturer/fixture|link")
     sub.add_parser("update-schema", help="regenerate the confed schema from the library")
     p_show = sub.add_parser("show", help="print the controls a profile maps to")
     p_show.add_argument("key", metavar="manufacturer/fixture")
@@ -123,7 +163,7 @@ def main(argv: list[str]) -> int:
         return update_schema(Path(args.schema), library_dir)
     if args.command == "show":
         return cmd_show(args.key, args.mode, library_dir)
-    return run_service(Path(args.config), library_dir)
+    return run_service(Path(args.config), library_dir, Path(args.schema))
 
 
 if __name__ == "__main__":

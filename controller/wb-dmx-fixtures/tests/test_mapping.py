@@ -126,6 +126,6 @@ def test_schema_offers_library_profiles_with_their_modes():
     schema = library.build_schema(profiles, "/etc/x.conf", "x")
     branches = schema["properties"]["fixtures"]["items"]["oneOf"]
     assert len(branches) == 3
-    mh = next(b for b in branches if b["properties"]["fixture"]["enum"] == ["stairville/mh-x50"])
+    mh = next(b for b in branches if b["properties"]["fixture"]["default"] == "stairville/mh-x50")
     assert mh["properties"]["mode"]["enum"] == ["8ch", "14ch"]
     assert schema["configFile"]["path"] == "/etc/x.conf"

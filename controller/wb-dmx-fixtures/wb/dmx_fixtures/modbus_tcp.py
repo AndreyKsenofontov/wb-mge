@@ -95,3 +95,18 @@ class DmxGatewayClient:
 
     def blackout(self) -> None:
         self._transact(struct.pack(">BHH", 0x06, REG_BLACKOUT, 1))
+
+
+def merge_ranges(blocks: list[tuple[int, bytes]]) -> list[tuple[int, bytes]]:
+    """Join (start channel, bytes) blocks that touch into one block each, sorted by channel.
+
+    Fixtures of a group sit back to back, so a group change becomes one FC16 sequence instead of
+    one request per fixture. Overlapping blocks are not expected (the config forbids them).
+    """
+    out: list[tuple[int, bytes]] = []
+    for start, data in sorted(blocks, key=lambda b: b[0]):
+        if out and out[-1][0] + len(out[-1][1]) == start:
+            out[-1] = (out[-1][0], out[-1][1] + data)
+        else:
+            out.append((start, data))
+    return out
